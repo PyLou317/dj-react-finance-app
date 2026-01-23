@@ -1,5 +1,4 @@
 from django.db import models
-
 from django.conf import settings
 
 
@@ -60,10 +59,11 @@ class Account(models.Model):
     "extra": {
         "account-open-date": 978360153,
     '''
-    # Map to "id"
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    
+    # Map to transaction id
     external_id = models.CharField(max_length=255, unique=True)
     org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='accounts')
-    user_id = models.CharField(max_length=255, db_index=True) # Clerk ID
     name = models.CharField(max_length=255)
     currency = models.CharField(max_length=10, default="CAD")
     balance = models.DecimalField(max_digits=19, decimal_places=2)
