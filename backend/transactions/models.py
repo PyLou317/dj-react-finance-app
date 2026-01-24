@@ -70,6 +70,28 @@ class Account(models.Model):
     available_balance = models.DecimalField(max_digits=19, decimal_places=2, null=True)
     balance_date = models.DateTimeField(null=True)
     extra = models.JSONField(default=dict, blank=True)
+    
+
+class Category(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    color = models.CharField(max_length=20, default='#CBDE0')
+    icon = models.CharField(max_length=50, default='help-circle')
+    parent = models.ForeignKey(
+        'self', 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True, 
+        related_name='subcategories'
+    )
+    
+    class Meta:
+        unique_together = ('name', 'parent')
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        if self.parent:
+            return f"{self.parent.name} > {self.name}"
+        return self.name
 
 
 #Transaction
@@ -92,6 +114,17 @@ class Transaction(models.Model):
     description = models.TextField()
     is_pending = models.BooleanField(default=False)
     extra_data = models.JSONField(default=dict, blank=True)
+    icon = models.CharField(max_length=50, default='help-circle')
+    category = models.ForeignKey(
+        Category, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='transactions'
+    )
     
     class Meta:
         ordering = ['-date_posted']
+        
+    def __str__(self):
+        return f"{self.amount} - {self.payee}"
