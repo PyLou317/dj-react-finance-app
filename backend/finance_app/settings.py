@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'celery',
     'django_celery_beat',
     'corsheaders',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -147,8 +148,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'finance_app.backends.ClerkAuthentication',
     ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 50
+    'PAGE_SIZE': 50,
 }
 
 AUTH_USER_MODEL = 'users.User'
