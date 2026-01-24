@@ -6,6 +6,7 @@ from .tasks import sync_simplefin
 from .models import Organization, Account, Transaction
 from .serializers import OrganizationSerializer, AccountSerializer, TransactionSerializer
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import filters
 
 
 # SimpleFIN
@@ -39,15 +40,23 @@ class ListAccountView(APIView):
 
 class ListTransactionView(APIView):
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['account__name', 'amount', 'description', 'payee', 'date_posted']
     
     def get(self, request, format=None):
-        trans = Transaction.objects.filter(channel_owner=request.user)
+        queryset = Transaction.objects.filter(account__user=request.user)
+        
+        account_id = request.query_params.get('account_id')
+        if account_id:
+            queryset = queryset.filter(account_id=account_id)
+            
         paginator = PageNumberPagination()
-        page = paginator.paginate_queryset(trans, request)
+        page = paginator.paginate_queryset(queryset, request)
         
         if page is not None:
             serializer = TransactionSerializer(page, many=True)
             return paginator.get_paginated_response(serializer.data)
         
-        serializer = TransactionSerializer(trans, many=True)
+        serializer = TransactionSerializer(queryset, many=True)
         return Response(serializer.data)
+    
