@@ -6,8 +6,8 @@ from celery import shared_task
 from django.utils.dateparse import parse_date
 from django.utils.timezone import make_aware
 from django.db import transaction
-from .models import Organization, Account, Transaction
-from users.models import User
+from .models import Organization, Account, Transaction, Category
+from .utils import categorize_transaction
     
     
 @shared_task
@@ -73,6 +73,12 @@ def sync_simplefin(days):
                         posted_date = datetime.fromtimestamp(raw_posted).date()
                     else:
                         posted_date = parse_date(str(raw_posted))
+                    
+                    # Categorize transaction
+                    category = categorize_transaction(
+                        description=txn_data['description'], 
+                        payee=txn_data['payee']
+                        )
 
                     Transaction.objects.update_or_create(
                         external_id=txn_data['id'],
@@ -83,7 +89,8 @@ def sync_simplefin(days):
                             'payee': txn_data['payee'],
                             'description': txn_data['description'],
                             'is_pending': txn_data.get('pending', False),
-                            'extra_data': txn_data.get('extra', {})
+                            'extra_data': txn_data.get('extra', {}),
+                            'category': category,
                         }
                     )
         
