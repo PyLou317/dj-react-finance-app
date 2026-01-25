@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .tasks import sync_simplefin
-from .models import Organization, Account, Transaction
-from .serializers import OrganizationSerializer, AccountSerializer, TransactionSerializer
+from .models import Organization, Account, Transaction, Budget
+from .serializers import OrganizationSerializer, AccountSerializer, TransactionSerializer, BudgetSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
 
@@ -46,9 +46,15 @@ class ListTransactionView(APIView):
     def get(self, request, format=None):
         queryset = Transaction.objects.filter(account__user=request.user)
         
+        # Get transactions filtered by account 
         account_id = request.query_params.get('account_id')
         if account_id:
             queryset = queryset.filter(account_id=account_id)
+            
+        # Get transactions filtered by category
+        category_id = request.query_params.get('category_id')
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
             
         paginator = PageNumberPagination()
         page = paginator.paginate_queryset(queryset, request)
@@ -58,5 +64,16 @@ class ListTransactionView(APIView):
             return paginator.get_paginated_response(serializer.data)
         
         serializer = TransactionSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class ListTBudgetView(APIView):
+    permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'category', 'amount', 'month', 'year']
+    
+    def get(self, request, format=None):
+        queryset = Budget.objects.filter(user=request.user)
+        serializer = BudgetSerializer(queryset, many=True)
         return Response(serializer.data)
     

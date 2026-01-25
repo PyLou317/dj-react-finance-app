@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Account, Organization, Transaction
+from .models import Account, Organization, Transaction, Budget
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -19,5 +19,12 @@ class AccountSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
+        fields = '__all__'
+        depth = 2
+
+
+class BudgetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Budget
         fields = '__all__'
         depth = 2

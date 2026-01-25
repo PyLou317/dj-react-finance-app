@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class BankConnection(models.Model):
@@ -87,6 +88,7 @@ class Category(models.Model):
     class Meta:
         unique_together = ('name', 'parent')
         verbose_name_plural = "Categories"
+        ordering = ['name']
 
     def __str__(self):
         if self.parent:
@@ -128,3 +130,20 @@ class Transaction(models.Model):
         
     def __str__(self):
         return f"{self.amount} - {self.payee}"
+    
+    
+
+class Budget(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=19, decimal_places=2)
+    month = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(12)]
+    )
+    year = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ('user', 'category', 'month', 'year')
+
+    def __str__(self):
+        return f"{self.category.name}: {self.amount} ({self.month}/{self.year})"
