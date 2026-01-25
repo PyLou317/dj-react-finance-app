@@ -18,3 +18,8 @@ class TransactionAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'color', 'icon')
+
+@admin.register(Budget)
+class BudgetAdmin(admin.ModelAdmin):
+    list_display = ('id', 'category', 'amount', 'month', 'year')
+    # ordering = ['category']
