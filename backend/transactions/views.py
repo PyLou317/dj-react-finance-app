@@ -3,10 +3,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .tasks import sync_simplefin
-from .models import Organization, Account, Transaction, Budget
-from .serializers import OrganizationSerializer, AccountSerializer, TransactionSerializer, BudgetSerializer
+from .models import Organization, Account, Transaction, Budget, Category
+from .serializers import OrganizationSerializer, AccountSerializer, TransactionSerializer, BudgetSerializer, CategorySerializer
 from rest_framework.pagination import PageNumberPagination
-from rest_framework import filters
+from rest_framework import filters, generics
+from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Sum, Q, Value, DecimalField
+from datetime import date
+from django.db.models.functions import Coalesce
 
 
 # SimpleFIN
@@ -38,42 +42,66 @@ class ListAccountView(APIView):
         serializer = AccountSerializer(accounts, many=True)
         return Response(serializer.data)
 
-class ListTransactionView(APIView):
+class ListTransactionView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['account__name', 'amount', 'description', 'payee', 'date_posted']
+    serializer_class = TransactionSerializer
+    
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['account_id', 'category_id']
+    search_fields = ['account__name', 'description', 'payee', 'category__name']
+    
+    def get_queryset(self):
+        return Transaction.objects.filter(account__user=self.request.user)
+
+
+class DashboardTransactionView(APIView):
+    permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None):
         queryset = Transaction.objects.filter(account__user=request.user)
+        total_count = queryset.count()
+        sliced_data = queryset[:5]
         
-        # Get transactions filtered by account 
-        account_id = request.query_params.get('account_id')
-        if account_id:
-            queryset = queryset.filter(account_id=account_id)
-            
-        # Get transactions filtered by category
-        category_id = request.query_params.get('category_id')
-        if category_id:
-            queryset = queryset.filter(category_id=category_id)
-            
-        paginator = PageNumberPagination()
-        page = paginator.paginate_queryset(queryset, request)
+        serializer = TransactionSerializer(sliced_data, many=True)
         
-        if page is not None:
-            serializer = TransactionSerializer(page, many=True)
-            return paginator.get_paginated_response(serializer.data)
-        
-        serializer = TransactionSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response({
+            "count": total_count,
+            "results": serializer.data
+            })
 
 
 class ListTBudgetView(APIView):
     permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name', 'category', 'amount', 'month', 'year']
+    search_fields = ['name', 'category']
     
     def get(self, request, format=None):
         queryset = Budget.objects.filter(user=request.user)
         serializer = BudgetSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class CategoryTotalsView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, format=None):
+        today = date.today()
+        # Filters categories by users and transaction amounts
+        queryset = Category.objects.annotate(
+            category_sum=Coalesce(
+                Sum(
+                    'transactions__amount',
+                    filter=Q(
+                        transactions__account__user=request.user,
+                        transactions__date_posted__month=today.month,
+                        transactions__date_posted__year=today.year
+                    )
+                ),
+                Value(0),
+                output_field=DecimalField()
+            )
+        ).filter(category_sum__lt=0)
+        
+        serializer = CategorySerializer(queryset, many=True)
         return Response(serializer.data)
     

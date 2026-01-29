@@ -2,30 +2,33 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { fetchTransactions } from '../../api/transactions';
+import { fetchDashboardTransactions } from '../../api/transactions';
 
 import CompanyLogo from '../../components/Logo';
+import Card from './Card';
+import Title from './TItle';
 
-function TransList({ searchTerm }) {
+export default function TransCard() {
   const { getToken } = useAuth();
+
   const {
     isPending,
     isError,
-    data: transactions,
+    data: slicedTransactions,
     error,
   } = useQuery({
-    queryKey: ['transactions', searchTerm],
+    queryKey: ['slicedTransactions'],
     queryFn: async () => {
       const token = await getToken();
-      return fetchTransactions(token, searchTerm);
+      return fetchDashboardTransactions(token);
     },
     placeholderData: keepPreviousData,
   });
 
-  const count = transactions?.count ?? 0;
+  const data = slicedTransactions?.results;
 
-  const groupedTransactions = transactions?.results
-    ? transactions.results.reduce((groups, trans) => {
+  const groupedTransactions = data
+    ? data.reduce((groups, trans) => {
         const date = trans.date_posted;
         if (!groups[date]) {
           groups[date] = [];
@@ -36,18 +39,21 @@ function TransList({ searchTerm }) {
     : {};
 
   return (
-    <>
-      <div className="flex flex-row mb-2 text-sm gap-1 text-gray-400">
-        <p>Count:</p>
-        <span>
-          {count?.toLocaleString(undefined, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          })}
-        </span>
+    <Card>
+      <div className="flex flex-row items-start justify-between">
+        <Title name="Recent Transactions" />
+        <div className="flex flex-row mb-2 text-sm gap-1 text-gray-400">
+          <p>Count:</p>
+          <span>
+            {data?.length.toLocaleString(undefined, {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })}
+          </span>
+        </div>
       </div>
       {Object.keys(groupedTransactions).map((date) => (
-        <div key={date} className="mb-6">
+        <div key={date}>
           <h3 className="py-1 text-xs font-bold text-gray-500 uppercase sticky top-0">
             {new Date(date).toLocaleDateString(undefined, {
               weekday: 'long',
@@ -60,7 +66,7 @@ function TransList({ searchTerm }) {
               <>
                 <li
                   key={trans.id}
-                  className="flex flex-row gap-4 py-2 items-center bg-white"
+                  className="flex flex-row gap-4 mb-2 p-2 items-center bg-white rounded-xl"
                 >
                   <CompanyLogo name={trans.payee} className="w-8 h-8" />
                   <div className="flex flex-col min-w-0 flex-1">
@@ -68,11 +74,11 @@ function TransList({ searchTerm }) {
                       {trans.payee}
                     </span>
                     {trans.category.parent ? (
-                      <span className="text-[14px] text-gray-400 uppercase tracking-wider">
+                      <span className="text-[14px] truncate text-gray-400 uppercase tracking-wider">
                         {trans.category?.parent?.name} - {trans.category.name}
                       </span>
                     ) : (
-                      <span className="text-[14px] text-gray-400 uppercase tracking-wider">
+                      <span className="text-[14px] truncate text-gray-400 uppercase tracking-wider">
                         {trans.category?.name}
                       </span>
                     )}
@@ -92,8 +98,6 @@ function TransList({ searchTerm }) {
           </ul>
         </div>
       ))}
-    </>
+    </Card>
   );
 }
-
-export default TransList;

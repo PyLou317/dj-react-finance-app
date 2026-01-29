@@ -6,14 +6,17 @@ from celery import shared_task
 from django.utils.dateparse import parse_date
 from django.utils.timezone import make_aware
 from django.db import transaction
-from .models import Organization, Account, Transaction, Category
+from .models import Organization, Account, Transaction, Category, Budget
 from .utils import categorize_transaction
+from datetime import date
     
     
 @shared_task
 def sync_simplefin(days):
     from django.contrib.auth import get_user_model
     User = get_user_model()
+    
+    db_cache = {}
     
     try:
         user_instance = User.objects.get(username='lucas')
@@ -67,6 +70,7 @@ def sync_simplefin(days):
 
                 # Transaction Sync
                 transactions_list = acc_data.get('transactions', [])
+                
                 for txn_data in transactions_list: # Variable now correctly scoped
                     raw_posted = txn_data.get('posted')
                     if isinstance(raw_posted, (int, float)):
@@ -77,7 +81,8 @@ def sync_simplefin(days):
                     # Categorize transaction
                     category = categorize_transaction(
                         description=txn_data['description'], 
-                        payee=txn_data['payee']
+                        payee=txn_data['payee'],
+                        db_cache=db_cache,
                         )
 
                     Transaction.objects.update_or_create(
@@ -105,4 +110,4 @@ def initial_sync():
 
 @shared_task
 def daily_sync():
-    return sync_simplefin(days=2)
+    return sync_simplefin(days=4)

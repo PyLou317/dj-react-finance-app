@@ -7,7 +7,7 @@ function CompanyLogo({ name, className = 'w-5 h-5' }) {
     <img
       src={`https://img.logo.dev/name/${name}?token=${LOGO_DEV_PUBLIC_KEY}`}
       alt="Company logo"
-      className={`${className} object-contain rounded-full border border-gray-200`}
+      className={`${className} object-contain rounded-full`}
     />
   );
 }

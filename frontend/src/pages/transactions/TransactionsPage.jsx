@@ -1,14 +1,22 @@
 import TransList from './TransList';
 import SearchBar from '../../components/searchbar/SearchBar';
+import Title from '../dashboard/TItle';
+import { useState } from 'react';
 
 export default function TransactionsPage() {
+  const [searchFilter, setSearchFilter] = useState('');
+
+  const handleSearch = (value) => {
+    setSearchFilter(value);
+  };
+
   return (
-    <div className="px-2">
-      <h1 className="mx-2 mb-6 uppercase font-semibold">Recent Transactions</h1>
-      <div className="my-4">
-        <SearchBar />
+    <div className="px-3">
+      <Title name="Transactions" />
+      <div className="my-2">
+        <SearchBar onSearch={handleSearch} />
       </div>
-      <TransList />
+      <TransList searchTerm={searchFilter} />
     </div>
   );
 }

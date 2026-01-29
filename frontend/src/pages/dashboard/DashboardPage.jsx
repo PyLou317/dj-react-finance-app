@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '@clerk/clerk-react';
-import CompanyLogo from '../../components/Logo';
+
+import BudgetCard from './BudgetCard';
+import AccountCardCarousel from './AccountCardCarousel';
+import TransCard from './TransCard';
 
 function DashboardPage() {
-
   return (
     <>
-      <p>Dashboard</p>
+      <AccountCardCarousel />
+      <BudgetCard />
+      <TransCard />
     </>
   );
 }

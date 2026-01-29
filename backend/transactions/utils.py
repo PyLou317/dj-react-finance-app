@@ -4,8 +4,10 @@ import csv
 import pandas as pd
 from io import StringIO, BytesIO
 from transactions.models import Category
+from functools import lru_cache
 
 
+@lru_cache(maxsize=1)
 def load_categories():
     """
     Loads categories from the categories.json file.
@@ -15,7 +17,7 @@ def load_categories():
         return json.load(f)
 
 
-def categorize_transaction(description: str, payee: str):
+def categorize_transaction(description: str, payee: str, db_cache=None):
     '''
     Categorize transaction based on keywords
 
@@ -44,6 +46,9 @@ def categorize_transaction(description: str, payee: str):
             break
 
     # 3. Database operations
+    if db_cache is not None and matched_sub_name in db_cache:
+        return db_cache[matched_sub_name]
+    
     parent_obj = None
     if matched_parent_name:
         parent_obj, _ = Category.objects.get_or_create(name=matched_parent_name, parent=None)
@@ -52,5 +57,8 @@ def categorize_transaction(description: str, payee: str):
         name=matched_sub_name, 
         parent=parent_obj
     )
+    
+    if db_cache is not None:
+        db_cache[matched_sub_name] = category_obj
     
     return category_obj
