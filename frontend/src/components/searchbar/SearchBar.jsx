@@ -20,7 +20,7 @@ export default function SearchBar({ onSearch }) {
       </div>
       <input
         type="text"
-        className="block pl-10 pr-4 py-1 rounded-2xl border-2 border-gray-200 w-full focus:outline-none focus:border-teal-500"
+        className="block pl-10 pr-4 py-1 rounded-2xl border-2 bg-white border-gray-200 w-full focus:outline-none focus:border-teal-500"
         placeholder="Search"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
