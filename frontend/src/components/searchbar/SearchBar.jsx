@@ -14,7 +14,7 @@ export default function SearchBar({ onSearch }) {
   }, [searchTerm, onSearch]);
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full md:w-[350px]">
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
         <Search className="h-5 w-5 text-gray-400" />
       </div>
