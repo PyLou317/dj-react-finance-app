@@ -15,7 +15,7 @@ export default function AccountCard({ account }) {
   }
 
   return (
-    <div className="flex flex-col p-6 rounded-3xl min-w-80 min-h-50 border border-gray-400 bg-neutral-900 text-white justify-between">
+    <div className="flex flex-col p-6 rounded-3xl min-w-60 min-h-50 border border-gray-400 bg-neutral-900 text-white justify-between">
       <CompanyLogo
         name={
           account.org.name == "President's Choice Bank"
@@ -25,7 +25,7 @@ export default function AccountCard({ account }) {
         className="w-8 h-8"
       />
       <div className="flex flex-row justify-between">
-        <p className="text-lg">
+        <span className="flex flex-col text-lg">
           Balance:{' '}
           {isVisible ? (
             <span className="text-xl">
@@ -37,7 +37,7 @@ export default function AccountCard({ account }) {
           ) : (
             '* * * * *'
           )}
-        </p>
+        </span>
         <button onClick={handleHideBalance} className="cursor-pointer">
           {isVisible ? <EyeClosed /> : <Eye />}
         </button>
