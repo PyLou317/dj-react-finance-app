@@ -21,5 +21,5 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Budget)
 class BudgetAdmin(admin.ModelAdmin):
-    list_display = ('id', 'category', 'amount', 'month', 'year')
+    list_display = ('id', 'category', 'amount')
     # ordering = ['category']
