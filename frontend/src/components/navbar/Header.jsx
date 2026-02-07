@@ -8,7 +8,7 @@ export default function WelcomeHeader() {
   return (
     <div>
       <h1 className="text-xl font-semibold">Hello, {user?.username}!</h1>
-      <small>Welcome to your finance app</small>
+      <small className='text-gray-400'>Welcome to Evergreen Finance</small>
       {/* <p className="text-sm text-gray-400">{date}</p> */}
     </div>
   );
