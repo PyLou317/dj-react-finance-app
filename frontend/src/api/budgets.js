@@ -1,4 +1,4 @@
-const fetchBudgets = async (token) => {
+export const fetchBudgets = async (token) => {
   const response = await fetch(`http://127.0.0.1:8000/api/budgets/`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -12,5 +12,3 @@ const fetchBudgets = async (token) => {
 
   return response.json();
 };
-
-export default fetchBudgets;
