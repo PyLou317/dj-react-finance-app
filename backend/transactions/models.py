@@ -78,7 +78,7 @@ class Account(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    color = models.CharField(max_length=20, default='#CBDE0')
+    color = models.CharField(max_length=20, default='#94a3b8')
     icon = models.CharField(max_length=50, default='help-circle')
     parent = models.ForeignKey(
         'self', 
