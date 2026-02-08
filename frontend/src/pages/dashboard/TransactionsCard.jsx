@@ -1,4 +1,4 @@
-import TransList from '../transactions/TransList';
+import TransList from '../transactions/TransListTable';
 
 export default function TransactionsCard() {
   return (
