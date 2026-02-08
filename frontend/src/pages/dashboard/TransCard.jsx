@@ -6,7 +6,8 @@ import { fetchDashboardTransactions } from '../../api/transactions';
 
 import CompanyLogo from '../../components/Logo';
 import Card from './Card';
-import Title from './TItle';
+import Title from './CardTItle';
+import { Link } from 'react-router-dom';
 
 export default function TransCard() {
   const { getToken } = useAuth();
@@ -41,16 +42,23 @@ export default function TransCard() {
   return (
     <Card>
       <div className="flex flex-row items-start justify-between">
-        <Title name="Recent Transactions" />
-        <div className="flex flex-row mb-2 text-sm gap-1 text-gray-400">
-          <p>Count:</p>
-          <span>
-            {data?.length.toLocaleString(undefined, {
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 0,
-            })}
-          </span>
+        <div className="flex flex-col">
+          <Title name="Recent Transactions" />
+          <div className="flex flex-row mb-2 text-sm gap-1 text-gray-400">
+            <p>Count:</p>
+            <span>
+              {data?.length.toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })}
+            </span>
+          </div>
         </div>
+    <Link to="/transaction-list">
+        <button className="text-sm pt-1 pe-2 hover:cursor-pointer">
+        View All
+        </button>
+    </Link>
       </div>
       {Object.keys(groupedTransactions).map((date) => (
         <div key={date}>
