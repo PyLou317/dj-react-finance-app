@@ -105,3 +105,50 @@ class CategoryTotalsView(APIView):
         serializer = CategorySerializer(queryset, many=True)
         return Response(serializer.data)
     
+
+class CategoryTotalsView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, format=None):
+        today = timezone.localtime(timezone.now())
+
+        month_raw = request.query_params.get('month', today.month)
+        year = request.query_params.get('year', today.year)
+        
+        try:
+            if isinstance(month_raw, str) and not month_raw.isdigit():
+                # Converts "January" or "january" to 1
+                month = datetime.datetime.strptime(month_raw, "%B").month
+            else:
+                month = int(month_raw)
+        except ValueError:
+            month = today.month
+        
+        queryset = Category.objects.annotate(
+            category_sum=Coalesce(
+                Sum(
+                    'transactions__amount',
+                    filter=Q(
+                        transactions__account__user=request.user,
+                        transactions__date_posted__month=month,
+                        transactions__date_posted__year=year
+                    )
+                ),
+                Value(0),
+                output_field=DecimalField()
+            )
+        ).filter(category_sum__lt=0)
+        
+        serializer = CategorySerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    
+class SyncTransactions(APIView):
+    def post(self, request):
+        daily_sync.delay()
+
+        return Response(
+            {"status": "Syncing transactions triggered"}, 
+            status=status.HTTP_202_ACCEPTED
+        )
+    
