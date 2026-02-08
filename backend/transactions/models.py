@@ -116,12 +116,12 @@ class Transaction(models.Model):
     description = models.TextField()
     is_pending = models.BooleanField(default=False)
     extra_data = models.JSONField(default=dict, blank=True)
-    icon = models.CharField(max_length=50, default='help-circle')
+    notes = models.TextField()
     category = models.ForeignKey(
         Category, 
         on_delete=models.SET_NULL, 
         null=True, 
-        blank=True, 
+        blank=True,
         related_name='transactions'
     )
     
