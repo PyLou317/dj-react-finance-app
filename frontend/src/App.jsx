@@ -1,18 +1,12 @@
 import { useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignOutButton,
-} from '@clerk/clerk-react';
+import { SignedIn, SignedOut, SignIn } from '@clerk/clerk-react';
 import { Outlet } from 'react-router';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 
 import { UserContext } from './UserContext.js';
 
 import BottomNavbar from './components/navbar/BottomNavbar';
-import TopNavbar from './components/navbar/TopNavBar';
 import fetchUser from './api/users';
 
 function App() {
@@ -34,13 +28,14 @@ function App() {
 
   return (
     <UserContext value={user}>
-      <div className="p-3 bg-white">
+      <div className="py-3 px-4 bg-neutral-100">
         <SignedOut>
-          <SignInButton />
+          <div className='flex justify-center items-center w-screen h-screen'>
+            <SignIn />
+          </div>
         </SignedOut>
         <SignedIn>
-          <TopNavbar />
-          <div className="mt-4 mb-16">
+          <div className="mb-16">
             <Outlet />
           </div>
           <BottomNavbar />
