@@ -72,6 +72,9 @@ class Account(models.Model):
     balance_date = models.DateTimeField(null=True)
     extra = models.JSONField(default=dict, blank=True)
     
+    class Meta:
+        ordering = ['name']
+    
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
