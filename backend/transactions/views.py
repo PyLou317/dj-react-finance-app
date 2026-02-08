@@ -81,11 +81,21 @@ class ListTBudgetView(APIView):
         return Response(serializer.data)
 
 
-class CategoryTotalsView(APIView):
+class CategoryListView(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None):
-        today = date.today()
+        queryset = Category.objects.all()
+        serializer = CategorySerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class CategoryTotalsByCurrentMonthView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, format=None):
+        today = timezone.localtime(timezone.now())
+        print("Today:", today)
         # Filters categories by users and transaction amounts
         queryset = Category.objects.annotate(
             category_sum=Coalesce(
