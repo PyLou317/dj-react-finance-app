@@ -22,6 +22,24 @@ class TransactionSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 2
 
+class TransactionWriteSerializer(serializers.ModelSerializer):
+    # This tells DRF to expect an ID, not a nested object
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+
+    class Meta:
+        model = Transaction
+        fields = ['category']
+
+class TransactionSumSerializer(serializers.ModelSerializer):
+    total_sum = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Transaction
+        fields = ['total_sum']
+
+    def get_total_sum(self, obj):
+        return Transaction.get_total_amount()
+
 
 class BudgetSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,3 +58,4 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'color', 'icon', 'parent', 'category_sum']
+        depth = 2
