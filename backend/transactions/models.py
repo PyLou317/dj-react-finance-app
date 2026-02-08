@@ -125,6 +125,11 @@ class Transaction(models.Model):
         related_name='transactions'
     )
     
+    @classmethod
+    def get_total_amount(cls):
+        result = cls.objects.aggregate(total=Sum('amount'))
+        return result['total'] or 0
+    
     class Meta:
         ordering = ['-date_posted']
         
