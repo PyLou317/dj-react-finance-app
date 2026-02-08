@@ -2,8 +2,9 @@ import { useAuth } from '@clerk/clerk-react';
 import fetchAccounts from '../../api/accounts';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import AccountCard from './AccountCard';
-import Title from './TItle';
+import Title from './CardTItle';
 import SkeletonAccountCard from './SkeletonAccountCard';
+import { sortAccounts } from '../../utils/sortAccounts';
 
 export default function AccountCardCarousel() {
   const { getToken } = useAuth();
@@ -23,13 +24,15 @@ export default function AccountCardCarousel() {
     placeholderData: keepPreviousData,
   });
 
+  const sortedAccounts = sortAccounts(accounts);
+
   return (
     <>
       <Title name="My Accounts" />
-      <div className="flex flex-row w-full gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4  ">
+      <div className="flex flex-row w-full gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
         {isPending
           ? skeletonCards.map((i) => <SkeletonAccountCard key={i} />)
-          : accounts?.map((account) => (
+          : sortedAccounts?.map((account) => (
               <AccountCard
                 account={account}
                 isPending={isPending}
