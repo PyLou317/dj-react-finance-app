@@ -90,3 +90,32 @@ export const syncTransactions = async (token) => {
     throw error;
   }
 };
+
+export const updateTransactionCategory = async (token, payload) => {
+  const { transactionId, categoryId } = payload;
+  const url = `api/transactions/${transactionId}/`;
+
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/${url}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        category: categoryId,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to update transaction category: ${response.statusText}`,
+      );
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Network or Server Error:', error);
+    throw error;
+  }
+};
