@@ -22,6 +22,7 @@ django-cors-headers==4.9.0
 django-filter==25.2
 django-timezone-field==7.2.1
 djangorestframework==3.16.1
+gunicorn==25.0.3
 h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
@@ -49,4 +50,3 @@ tzlocal==5.3.1
 urllib3==2.6.3
 vine==5.1.0
 wcwidth==0.2.14
-psycopg2-binary
