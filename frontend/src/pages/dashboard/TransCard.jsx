@@ -5,8 +5,8 @@ import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchDashboardTransactions } from '../../api/transactions';
 
 import CompanyLogo from '../../components/Logo';
-import Card from './Card';
 import Title from './CardTItle';
+import Card from './Card';
 import { Link } from 'react-router-dom';
 
 export default function TransCard() {
