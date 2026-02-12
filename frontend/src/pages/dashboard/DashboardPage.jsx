@@ -1,8 +1,6 @@
+import { useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
-import {
-  fetchCurrentCategoryTotals,
-  fetchCategoryTotals,
-} from '../../api/categories';
+import { fetchCategoryTotals } from '../../api/categories';
 import { fetchBudgets } from '../../api/budgets';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 
@@ -12,7 +10,7 @@ import AccountCardCarousel from './AccountCardCarousel';
 import TransCard from './TransCard';
 import CategoryCard from './CategoryCard';
 import MonthlyExpenseBarChart from './MonthlyExpenseBarChart';
-import { useState } from 'react';
+import PageWrapper from '../../components/PageWrapper';
 
 export default function DashboardPage() {
   const today = new Date();
@@ -34,20 +32,6 @@ export default function DashboardPage() {
     queryFn: async () => {
       const token = await getToken();
       return fetchBudgets(token);
-    },
-    placeholderData: keepPreviousData,
-  });
-
-  const {
-    isPending: currentCategoryTotalsIsPending,
-    isError: currentCategoryTotalsIsError,
-    data: currentCategoryTotals,
-    error: currentCategoryTotalsError,
-  } = useQuery({
-    queryKey: ['currentCategoryTotals'],
-    queryFn: async () => {
-      const token = await getToken();
-      return fetchCurrentCategoryTotals(token);
     },
     placeholderData: keepPreviousData,
   });
@@ -82,22 +66,24 @@ export default function DashboardPage() {
   return (
     <>
       <TopNavbar />
-      <div className="mb-2">
-        <AccountCardCarousel />
-      </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-2">
-        <BudgetCard budgets={budgets} categoryTotals={currentCategoryTotals} />
-        <CategoryCard categoryTotals={currentCategoryTotals} />
-        <TransCard />
-        <MonthlyExpenseBarChart
-          data={categoryTotals}
-          handleMonthFilter={handleMonthFilter}
-          handleYearFilter={handleYearFilter}
-          years={years}
-          monthFilter={monthFilter}
-          yearFilter={yearFilter}
-        />
-      </div>
+      <PageWrapper>
+        <div className="mx-auto mb-2">
+          <AccountCardCarousel />
+        </div>
+        <div className="sm:grid sm:grid-cols-2 flex flex-col gap-x-4 gap-y-2 justify-center">
+          <BudgetCard budgets={budgets} categoryTotals={categoryTotals} />
+          <CategoryCard categoryTotals={categoryTotals} />
+          <TransCard />
+          <MonthlyExpenseBarChart
+            data={categoryTotals}
+            handleMonthFilter={handleMonthFilter}
+            handleYearFilter={handleYearFilter}
+            years={years}
+            monthFilter={monthFilter}
+            yearFilter={yearFilter}
+          />
+        </div>
+      </PageWrapper>
     </>
   );
 }

@@ -1,4 +1,4 @@
-export default function SaveCancelBtns({ onClick, isPending }) {
+export default function SaveCancelBtns({ onClick, isPending, cancel }) {
   return (
     <div className="flex flex-row gap-1">
       <button
@@ -12,7 +12,7 @@ export default function SaveCancelBtns({ onClick, isPending }) {
       </button>
       <button
         id="cancelBtn"
-        onClick={() => setIsEditingNotes(false)}
+        onClick={cancel}
         className="flex flex-row justify-center items-center gap-1 text-red-500 bg-white border border-red-400 px-2 rounded-2xl"
       >
         <p className="text-[9pt] cursor-pointer">Cancel</p>

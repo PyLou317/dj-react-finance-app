@@ -54,11 +54,11 @@ export default function TransCard() {
             </span>
           </div>
         </div>
-    <Link to="/transaction-list">
-        <button className="text-sm pt-1 pe-2 hover:cursor-pointer">
-        View All
-        </button>
-    </Link>
+        <Link to="/transaction-list">
+          <button className="text-sm pt-1 pe-2 hover:cursor-pointer">
+            View All
+          </button>
+        </Link>
       </div>
       {Object.keys(groupedTransactions).map((date) => (
         <div key={date}>
@@ -71,37 +71,35 @@ export default function TransCard() {
           </h3>
           <ul>
             {groupedTransactions[date].map((trans) => (
-              <>
-                <li
-                  key={trans.id}
-                  className="flex flex-row gap-4 mb-2 p-2 items-center bg-white rounded-xl"
-                >
-                  <CompanyLogo name={trans.payee} className="w-8 h-8" />
-                  <div className="flex flex-col min-w-0 flex-1">
-                    <span className="font-semibold truncate text-[14px]">
-                      {trans.payee}
-                    </span>
-                    {trans.category.parent ? (
-                      <span className="text-[14px] truncate text-gray-400 uppercase tracking-wider">
-                        {trans.category?.parent?.name} - {trans.category.name}
-                      </span>
-                    ) : (
-                      <span className="text-[14px] truncate text-gray-400 uppercase tracking-wider">
-                        {trans.category?.name}
-                      </span>
-                    )}
-                  </div>
-                  <span
-                    className={`ml-auto font-semibold text-[16px] ${trans.amount >= 0 ? 'text-green-500' : 'text-gray-900'}`}
-                  >
-                    {trans.amount >= 0 ? '+' : '-'}$
-                    {Math.abs(trans.amount).toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+              <li
+                key={trans.id}
+                className="flex flex-row gap-4 mb-2 p-2 items-center bg-white rounded-xl"
+              >
+                <CompanyLogo name={trans.payee} className="w-8 h-8" />
+                <div className="flex flex-col min-w-0 flex-1">
+                  <span className="font-semibold truncate text-[14px]">
+                    {trans.payee}
                   </span>
-                </li>
-              </>
+                  {trans.category.parent ? (
+                    <span className="text-[14px] truncate text-gray-400 uppercase tracking-wider">
+                      {trans.category?.parent?.name} - {trans.category.name}
+                    </span>
+                  ) : (
+                    <span className="text-[14px] truncate text-gray-400 uppercase tracking-wider">
+                      {trans.category?.name}
+                    </span>
+                  )}
+                </div>
+                <span
+                  className={`ml-auto font-semibold text-[16px] ${trans.amount >= 0 ? 'text-green-500' : 'text-gray-900'}`}
+                >
+                  {trans.amount >= 0 ? '+' : '-'}$
+                  {Math.abs(trans.amount).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </span>
+              </li>
             ))}
           </ul>
         </div>

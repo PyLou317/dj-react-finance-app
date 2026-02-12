@@ -8,6 +8,7 @@ import TransList from './TransListTable';
 import SearchBar from '../../components/searchbar/SearchBar';
 import MainTitle from '../../components/MainTitle';
 import Loader from '../../components/Loader';
+import PageWrapper from '../../components/PageWrapper';
 
 export default function TransactionsPage() {
   const [searchFilter, setSearchFilter] = useState('');
@@ -35,35 +36,47 @@ export default function TransactionsPage() {
 
   const handleSyncTransactions = (e) => {
     e.preventDefault();
-
     syncTransMutation.mutate();
   };
 
   return (
-    <>
-      <div className="flex items-center justify-between mb-4">
-        <MainTitle name="Transactions" />
-        <div className="flex-none">
-          <button
-            onClick={handleSyncTransactions}
-            className="bg-teal-400 hover:bg-teal-500 text-white font-medium py-1 px-4 rounded-2xl transition-colors cursor-pointer"
-          >
-            {syncTransMutation.isPending ? (
-              <div className="flex flex-row gap-2">
-                <Loader size={4} />
-                <span>Syncing...</span>
-              </div>
-            ) : (
-              <span>Sync</span>
-            )}
-          </button>
-        </div>
-      </div>
+    <div>
+      {transactionsId ? (
+        <Outlet />
+      ) : (
+        <PageWrapper>
+          {/* Page Header Area */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <MainTitle name="Transactions" />
 
-      <div className="my-6">
-        <SearchBar onSearch={handleSearch} />
-      </div>
-      {transactionsId ? <Outlet /> : <TransList searchTerm={searchFilter} />}
-    </>
+            {/* Sync Button */}
+            <button
+              onClick={handleSyncTransactions}
+              disabled={syncTransMutation.isPending}
+              className="flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-6 rounded-xl transition-colors cursor-pointer disabled:opacity-50"
+            >
+              {syncTransMutation.isPending ? (
+                <>
+                  <Loader size={4} />
+                  <span>Syncing...</span>
+                </>
+              ) : (
+                <span>Sync Transactions</span>
+              )}
+            </button>
+          </div>
+
+          {/* Search Bar - Contained */}
+          <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-6">
+            <SearchBar onSearch={handleSearch} />
+          </div>
+
+          {/* List Area - Card Container */}
+          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <TransList searchTerm={searchFilter} />
+          </div>
+        </PageWrapper>
+      )}
+    </div>
   );
 }

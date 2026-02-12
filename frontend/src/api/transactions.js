@@ -1,8 +1,23 @@
-export const fetchTransactions = async (token, searchTerm = '') => {
-  const query = searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : '';
+export const fetchTransactions = async (
+  token,
+  searchTerm = '',
+  year = '',
+  month = '',
+  category = '',
+) => {
+  const params = new URLSearchParams();
+
+  if (searchTerm) params.append('search', searchTerm);
+  if (year) params.append('year', year);
+  if (month) params.append('month', month);
+  if (category) params.append('category', category);
+
+  const baseUrl = 'api/transactions/';
+  const queryString = params.toString() ? `?${params.toString()}` : '';
+
   try {
     const response = await fetch(
-      `http://127.0.0.1:8000/api/transactions/${query}`,
+      `http://127.0.0.1:8000/${baseUrl}${queryString}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -104,6 +119,35 @@ export const updateTransactionCategory = async (token, payload) => {
       },
       body: JSON.stringify({
         category: categoryId,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to update transaction category: ${response.statusText}`,
+      );
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Network or Server Error:', error);
+    throw error;
+  }
+};
+
+export const updateTransactionNotes = async (token, payload) => {
+  const { transactionId, notes } = payload;
+  const url = `api/transactions/${transactionId}/`;
+
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/${url}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        notes: notes,
       }),
     });
 

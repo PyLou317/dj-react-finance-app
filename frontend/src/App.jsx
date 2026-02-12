@@ -28,17 +28,19 @@ function App() {
 
   return (
     <UserContext value={user}>
-      <div className="py-3 px-4 bg-neutral-100">
+      <div className=" bg-neutral-100 min-h-screen">
         <SignedOut>
-          <div className='flex justify-center items-center w-screen h-screen'>
+          <div className="flex justify-center items-center w-screen h-screen">
             <SignIn />
           </div>
         </SignedOut>
         <SignedIn>
-          <div className="mb-16">
-            <Outlet />
-          </div>
           <BottomNavbar />
+          <div className="flex-1 sm:pl-64">
+            <div className="p-4 sm:p-6 mb-16 sm:mb-0">
+              <Outlet />
+            </div>
+          </div>
         </SignedIn>
       </div>
     </UserContext>

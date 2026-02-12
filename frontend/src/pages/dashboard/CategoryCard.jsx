@@ -5,15 +5,16 @@ import { Link } from 'react-router-dom';
 import NoDataAvailable from './NoDataAvailable';
 
 export default function CategoryCard({ categoryTotals }) {
-  const sortedCategoryTotals = categoryTotals?.sort((a, b) =>
-    a.name.localeCompare(b.name),
+  const sortedCategoryTotals = categoryTotals?.sort(
+    (a, b) => Number(a.category_sum) - Number(b.category_sum),
   );
+  const slicedCategories = sortedCategoryTotals?.slice(0, 5);
 
   return (
     <Card>
       <div className="flex flex-row items-start justify-between">
-        <CardTitle name="Categories" />
-        <Link to="/categories-list">
+        <CardTitle name="Categories" subTitle="Top 5 categories" />
+        <Link to="/categories">
           <button className="text-sm pt-1 pe-2 hover:cursor-pointer">
             View All
           </button>
@@ -24,8 +25,8 @@ export default function CategoryCard({ categoryTotals }) {
           <NoDataAvailable />
         ) : (
           <ul className="overflow-auto scrollbar-hide">
-            {sortedCategoryTotals?.map((category) => (
-              <CategoryRow category={category} />
+            {slicedCategories?.map((category) => (
+              <CategoryRow key={category.id} category={category} />
             ))}
           </ul>
         )}

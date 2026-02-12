@@ -28,7 +28,7 @@ class TransactionWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = ['category']
+        fields = ['category', 'notes']
 
 class TransactionSumSerializer(serializers.ModelSerializer):
     total_sum = serializers.SerializerMethodField()

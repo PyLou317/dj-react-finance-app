@@ -34,6 +34,7 @@ export default function AccountCardCarousel() {
           ? skeletonCards.map((i) => <SkeletonAccountCard key={i} />)
           : sortedAccounts?.map((account) => (
               <AccountCard
+                key={account.id}
                 account={account}
                 isPending={isPending}
                 isFetching={isFetching}

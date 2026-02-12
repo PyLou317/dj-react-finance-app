@@ -59,7 +59,32 @@ class ListTransactionView(generics.ListAPIView):
     search_fields = ['account__name', 'description', 'payee', 'category__name']
     
     def get_queryset(self):
-        return Transaction.objects.filter(account__user=self.request.user)
+        month_raw = self.request.query_params.get('month')
+        year = self.request.query_params.get('year')
+        category = self.request.query_params.get('category')
+        
+        queryset = Transaction.objects.filter(account__user=self.request.user)
+        
+        if year:
+            queryset = queryset.filter(date_posted__year=year)
+        
+        if month_raw:
+            try:
+                if isinstance(month_raw, str) and not month_raw.isdigit():
+                    # Converts "January" or "january" to 1
+                    month = datetime.datetime.strptime(month_raw, "%B").month
+                else:
+                    month = int(month_raw)
+                    
+                queryset = queryset.filter(date_posted__month=month)
+            except ValueError:
+                pass
+        
+        if category:
+            queryset = queryset.filter(category=category)
+        
+        return queryset
+        
     
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -131,32 +156,6 @@ class CategoryListView(APIView):
         serializer = CategorySerializer(queryset, many=True)
         return Response(serializer.data)
 
-
-class CategoryTotalsByCurrentMonthView(APIView):
-    permission_classes = [IsAuthenticated]
-    
-    def get(self, request, format=None):
-        today = timezone.localtime(timezone.now())
-        print("Today:", today)
-        # Filters categories by users and transaction amounts
-        queryset = Category.objects.annotate(
-            category_sum=Coalesce(
-                Sum(
-                    'transactions__amount',
-                    filter=Q(
-                        transactions__account__user=request.user,
-                        transactions__date_posted__month=today.month,
-                        transactions__date_posted__year=today.year
-                    )
-                ),
-                Value(0),
-                output_field=DecimalField()
-            )
-        ).filter(category_sum__lt=0)
-        
-        serializer = CategorySerializer(queryset, many=True)
-        return Response(serializer.data)
-    
 
 class CategoryTotalsView(APIView):
     permission_classes = [IsAuthenticated]

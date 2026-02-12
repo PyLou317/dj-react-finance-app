@@ -1,19 +1,25 @@
+import { useState } from 'react';
+import { useAuth } from '@clerk/clerk-react';
 import { Link, useParams } from 'react-router-dom';
-import {
-  fetchTransactionDetails,
-  updateTransactionCategory,
-} from '../../api/transactions';
-import { fetchCategories } from '../../api/categories';
 import {
   useQuery,
   keepPreviousData,
   useQueryClient,
   useMutation,
 } from '@tanstack/react-query';
-import { useAuth } from '@clerk/clerk-react';
+import {
+  fetchTransactionDetails,
+  updateTransactionCategory,
+  updateTransactionNotes,
+} from '../../api/transactions';
+import { fetchCategories } from '../../api/categories';
+
+import { capitalize } from '../../utils/capitalizeFirstLetter';
+
 import DetailRow from './DetailRow';
 import CompanyLogo from '../../components/Logo';
-import { capitalize } from '../../utils/capitalizeFirstLetter';
+import SaveCancel from '../../pages/transactions/SaveCancel';
+
 import {
   ArrowLeft,
   Share2,
@@ -22,7 +28,6 @@ import {
   CreditCard,
   Pencil,
 } from 'lucide-react';
-import { useState } from 'react';
 
 export default function TransDetailPage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -76,6 +81,17 @@ export default function TransDetailPage() {
     },
   });
 
+  const updateTransNotesMutation = useMutation({
+    mutationFn: async (payload) => {
+      const token = await getToken();
+      return updateTransactionNotes(token, payload);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['transaction']);
+      setIsEditingNotes(false);
+    },
+  });
+
   function submitCategoryChange() {
     const payload = {
       transactionId: String(transData.id),
@@ -91,7 +107,7 @@ export default function TransDetailPage() {
       notes: categoryNotes,
     };
 
-    updateTransCategoryMutation.mutate(payload);
+    updateTransNotesMutation.mutate(payload);
   }
 
   return (
@@ -151,24 +167,11 @@ export default function TransDetailPage() {
                 </option>
               ))}
             </select>
-            <div className="flex flex-row gap-1">
-              <button
-                id="saveBtn"
-                onClick={submitCategoryChange}
-                className="flex flex-row justify-center items-center gap-1 text-white bg-blue-500 px-2 rounded-2xl"
-              >
-                <p className="text-[9pt] cursor-pointer">
-                  {updateTransCategoryMutation.isPending ? 'Saving...' : 'Save'}
-                </p>
-              </button>
-              <button
-                id="cancelBtn"
-                onClick={() => setIsEditing(false)}
-                className="flex flex-row justify-center items-center gap-1 text-red-500 bg-white border border-red-400 px-2 rounded-2xl"
-              >
-                <p className="text-[9pt] cursor-pointer">Cancel</p>
-              </button>
-            </div>
+            <SaveCancel
+              isPending={updateTransCategoryMutation.isPending}
+              onClick={submitCategoryChange}
+              cancel={() => setIsEditing(false)}
+            />
           </div>
         )}
         <div className={`text-3xl font-bold`}>
@@ -203,7 +206,10 @@ export default function TransDetailPage() {
             <span>Notes</span>
             <button
               id="editBtn"
-              onClick={() => setIsEditingNotes(true)}
+              onClick={() => {
+                setIsEditingNotes(true);
+                setCategoryNotes(transData?.notes || '');
+              }}
               className={`${isEditingNotes ? 'text-gray-400' : 'text-blue-400 cursor-pointer'}`}
               disabled={isEditingNotes}
             >
@@ -213,41 +219,29 @@ export default function TransDetailPage() {
         </label>
         {!isEditingNotes ? (
           <div className="bg-white p-4 rounded-xl border border-gray-200 text-sm text-gray-700">
-            {transData?.notes
-              ? transData.notes
+            {transData?.notes != ' ' && transData?.notes != ''
+              ? transData?.notes
               : 'No notes added to this transaction.'}
           </div>
         ) : (
-          <>
+          <form>
             <textarea
               id="notes"
               name="notes"
               rows="2"
               cols="35"
-              className="p-2 border-2 border-gray-400 rounded-lg"
-              value={transData?.notes}
+              className="p-2 border-2 border-gray-400 rounded-lg bg-white"
+              value={categoryNotes}
+              onChange={(e) => setCategoryNotes(e.target.value)}
             >
               {transData?.notes}
             </textarea>
-            <div className="flex flex-row gap-1">
-              <button
-                id="saveBtn"
-                onClick={submitCategoryNotesChange}
-                className="flex flex-row justify-center items-center gap-1 text-white bg-blue-500 px-2 rounded-2xl"
-              >
-                <p className="text-[9pt] cursor-pointer">
-                  {updateTransCategoryMutation.isPending ? 'Saving...' : 'Save'}
-                </p>
-              </button>
-              <button
-                id="cancelBtn"
-                onClick={() => setIsEditingNotes(false)}
-                className="flex flex-row justify-center items-center gap-1 text-red-500 bg-white border border-red-400 px-2 rounded-2xl"
-              >
-                <p className="text-[9pt] cursor-pointer">Cancel</p>
-              </button>
-            </div>
-          </>
+            <SaveCancel
+              onClick={submitCategoryNotesChange}
+              isPending={updateTransNotesMutation.isPending}
+              cancel={() => setIsEditingNotes(false)}
+            />
+          </form>
         )}
       </div>
     </div>
