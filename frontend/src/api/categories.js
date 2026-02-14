@@ -1,3 +1,6 @@
+const VITE_API_URL = import.meta.env.VITE_API_URL;
+const apiUrl = VITE_API_URL || 'http://127.0.0.1:8000/';
+
 export const fetchCategoryTotals = async (token, monthFilter, yearFilter) => {
   const params = new URLSearchParams();
 
@@ -8,15 +11,12 @@ export const fetchCategoryTotals = async (token, monthFilter, yearFilter) => {
   const queryString = params.toString() ? `?${params.toString()}` : '';
 
   try {
-    const response = await fetch(
-      `http://127.0.0.1:8000/${baseUrl}${queryString}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${apiUrl}${baseUrl}${queryString}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(
@@ -35,7 +35,7 @@ export const fetchCategories = async (token) => {
   const url = `/api/categories`;
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/${url}`, {
+    const response = await fetch(`${apiUrl}${url}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',

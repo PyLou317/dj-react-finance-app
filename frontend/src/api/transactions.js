@@ -1,3 +1,6 @@
+const VITE_API_URL = import.meta.env.VITE_API_URL;
+const apiUrl = VITE_API_URL || 'http://127.0.0.1:8000/';
+
 export const fetchTransactions = async (
   token,
   searchTerm = '',
@@ -16,15 +19,12 @@ export const fetchTransactions = async (
   const queryString = params.toString() ? `?${params.toString()}` : '';
 
   try {
-    const response = await fetch(
-      `http://127.0.0.1:8000/${baseUrl}${queryString}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${apiUrl}${baseUrl}${queryString}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch transactions: ${response.statusText}`);
@@ -38,15 +38,12 @@ export const fetchTransactions = async (
 };
 
 export const fetchDashboardTransactions = async (token) => {
-  const response = await fetch(
-    `http://127.0.0.1:8000/api/dashboard/transactions/`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+  const response = await fetch(`${apiUrl}api/dashboard/transactions/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
     },
-  );
+  });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch transactions: ${response.statusText}`);
@@ -57,15 +54,12 @@ export const fetchDashboardTransactions = async (token) => {
 
 export const fetchTransactionDetails = async (token, Id) => {
   try {
-    const response = await fetch(
-      `http://127.0.0.1:8000/api/transactions/${Id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${apiUrl}api/transactions/${Id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(
@@ -82,16 +76,13 @@ export const fetchTransactionDetails = async (token, Id) => {
 
 export const syncTransactions = async (token) => {
   try {
-    const response = await fetch(
-      `http://127.0.0.1:8000/api/sync-transactions/`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${apiUrl}api/sync-transactions/`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(
@@ -111,7 +102,7 @@ export const updateTransactionCategory = async (token, payload) => {
   const url = `api/transactions/${transactionId}/`;
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/${url}`, {
+    const response = await fetch(`${apiUrl}${url}`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -140,7 +131,7 @@ export const updateTransactionNotes = async (token, payload) => {
   const url = `api/transactions/${transactionId}/`;
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/${url}`, {
+    const response = await fetch(`${apiUrl}${url}`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${token}`,
