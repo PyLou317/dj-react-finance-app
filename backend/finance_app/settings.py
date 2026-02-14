@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     # My apps
     'transactions',
     'users',
+    'commando',
     
     # 3rd party
     'rest_framework',
