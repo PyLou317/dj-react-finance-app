@@ -21,6 +21,11 @@ from .tasks import daily_sync, initial_sync
 import datetime
 
 
+import logging
+
+# Configure logger
+logger = logging.getLogger(__name__)
+
 # SimpleFIN
 class TriggerLongSFSync(APIView):
     def post(self, request):
@@ -196,9 +201,10 @@ class CategoryTotalsView(APIView):
     
 class SyncTransactions(APIView):
     def post(self, request):
+        logger.info("Syncing started...")
         # daily_sync.delay()
         initial_sync.delay()
-
+        logger.info("Syncing finished successfully.")
         return Response(
             {"status": "Syncing transactions triggered"}, 
             status=status.HTTP_202_ACCEPTED
