@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'your-railway-app-name.up.railway.app', # Replace with your actual domain
+    'backend-production-89fc.up.railway.app'
     'localhost',
     '127.0.0.1',
 ]
