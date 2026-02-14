@@ -133,6 +133,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
@@ -142,7 +143,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 # Celery Configuration Options
 CELERY_TIMEZONE = "Canada/Pacific"
@@ -166,7 +166,7 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'users.User'
 
 CORS_ALLOWED_ORIGINS = [
+    "https://frontend-production-64c6.up.railway.app",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://frontend-production-64c6.up.railway.app",
 ]
