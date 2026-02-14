@@ -28,6 +28,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == '1'
 
 ALLOWED_HOSTS = [
+    'https://backend-production-89fc.up.railway.app',
     'backend-production-89fc.up.railway.app',
     'localhost',
     '127.0.0.1',
@@ -177,6 +178,7 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'users.User'
 
 CORS_ALLOWED_ORIGINS = [
+    "https://backend-production-89fc.up.railway.app",
     "https://frontend-production-64c6.up.railway.app",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
