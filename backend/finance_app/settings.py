@@ -31,6 +31,7 @@ ALLOWED_HOSTS = [
     'backend-production-89fc.up.railway.app',
     'localhost',
     '127.0.0.1',
+    '*',
 ]
 
 
