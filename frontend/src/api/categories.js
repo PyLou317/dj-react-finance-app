@@ -31,7 +31,7 @@ export const fetchCategoryTotals = async (token, monthFilter, yearFilter) => {
 };
 
 export const fetchCategories = async (token) => {
-  const url = `/api/categories`;
+  const url = `api/categories`;
 
   try {
     const response = await fetch(`${apiUrl}${url}`, {
