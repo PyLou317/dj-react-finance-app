@@ -17,7 +17,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from datetime import date
 
-from .tasks import daily_sync
+from .tasks import daily_sync, initial_sync
 import datetime
 
 
@@ -196,7 +196,8 @@ class CategoryTotalsView(APIView):
     
 class SyncTransactions(APIView):
     def post(self, request):
-        daily_sync.delay()
+        # daily_sync.delay()
+        initial_sync.delay()
 
         return Response(
             {"status": "Syncing transactions triggered"}, 
