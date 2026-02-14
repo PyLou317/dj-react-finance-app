@@ -1,1 +1,1 @@
-web: gunicorn finance_app.wsgi
+web: mkdir -p static staticfiles && python manage.py collectstatic --noinput && python manage.py migrate && gunicorn finance_app.wsgi
