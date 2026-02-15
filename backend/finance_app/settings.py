@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / '.env.bak')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == '1'
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = [
     'https://backend-production-89fc.up.railway.app',
@@ -84,7 +87,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'finance_app.wsgi.application'
 
-
 # Database
 DATABASES = {
     'default': dj_database_url.config(
@@ -92,8 +94,7 @@ DATABASES = {
         default='sqlite:///db.sqlite3',
         conn_max_age=600
     )
-}
-
+}  
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -133,7 +134,6 @@ STATIC_URL = '/static/'
 # The absolute path to the directory where collectstatic will collect static files for deployment.
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
@@ -165,8 +165,8 @@ AUTH_USER_MODEL = 'users.User'
 CORS_ALLOWED_ORIGINS = [
     "https://backend-production-89fc.up.railway.app",
     "https://frontend-production-64c6.up.railway.app",
-    "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5173"
 ]
 
 CORS_ALLOW_CREDENTIALS = True
