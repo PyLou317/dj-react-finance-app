@@ -4,7 +4,6 @@ function CompanyLogo({ name, className = 'w-5 h-5' }) {
   if (!name) return null;
 
   const logoUrl = `https://img.logo.dev/${name}?token=${LOGO_DEV_PUBLIC_KEY}&format=webp`;
-  console.log('Generated URL:', logoUrl);
 
   return (
     <img
