@@ -50,7 +50,6 @@ export default function CategoriesPage() {
     'November',
     'December',
   ];
-  console.log(categoryTotals);
   return (
     <div>
       {categoryId ? (

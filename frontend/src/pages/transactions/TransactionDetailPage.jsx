@@ -53,8 +53,6 @@ export default function TransDetailPage() {
     placeholderData: keepPreviousData,
   });
 
-  //   console.log('Transaction:', transData);
-
   const {
     data: categoryData,
     isPending: categoryIsPending,
