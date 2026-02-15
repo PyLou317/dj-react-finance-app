@@ -3,11 +3,14 @@ function CompanyLogo({ name, className = 'w-5 h-5' }) {
 
   if (!name) return null;
 
+  const logoUrl = `https://img.logo.dev/${name}?token=${LOGO_DEV_PUBLIC_KEY}&format=webp`;
+
   return (
     <img
-      src={`https://img.logo.dev/name/${name}?token=${LOGO_DEV_PUBLIC_KEY}`}
-      alt="Company logo"
+      src={logoUrl}
+      alt={`${name} logo`}
       className={`${className} object-contain rounded-full`}
+      loading="lazy"
     />
   );
 }
