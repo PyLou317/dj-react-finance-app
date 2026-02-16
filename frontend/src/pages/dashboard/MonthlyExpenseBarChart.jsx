@@ -62,7 +62,7 @@ export default function MonthlyExpenseBarChart({
         type: 'logarithmic',
         beginAtZero: false,
         grid: {
-          display: false, // Removing horizontal lines often makes it look cleaner
+          display: false,
         },
       },
     },
@@ -70,14 +70,13 @@ export default function MonthlyExpenseBarChart({
     maintainAspectRatio: true,
     plugins: {
       legend: {
-        display: 'false',
+        display: false,
       },
     },
     indexAxis: 'x',
     elements: {
       bar: {
         borderWidth: 2,
-        // Fixed width in pixels or percentage of the category width
         barPercentage: 0.6,
         categoryPercentage: 0.8,
       },
