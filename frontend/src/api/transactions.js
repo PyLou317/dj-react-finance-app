@@ -6,6 +6,7 @@ export const fetchTransactions = async (
   year = '',
   month = '',
   category = '',
+  page,
 ) => {
   const params = new URLSearchParams();
 
@@ -13,6 +14,7 @@ export const fetchTransactions = async (
   if (year) params.append('year', year);
   if (month) params.append('month', month);
   if (category) params.append('category', category);
+  if (page) params.append('page', page);
 
   const baseUrl = 'api/transactions/';
   const queryString = params.toString() ? `?${params.toString()}` : '';

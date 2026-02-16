@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
@@ -13,12 +13,14 @@ import '../../utils/toolTipStyles.css';
 import FilterDropDown from './FilterDropDown';
 import TransactionStatBar from './TransactionStatBar';
 import FilterComponent from './FilterComponent';
+import Pagination from '../../components/Pagination';
 
 function TransList({ searchTerm }) {
   const [openFilters, setOpenFilters] = useState(false);
   const [monthFilter, setMonthFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [page, setPage] = useState(1);
 
   const { getToken } = useAuth();
 
@@ -47,6 +49,7 @@ function TransList({ searchTerm }) {
       yearFilter,
       monthFilter,
       categoryFilter,
+      page,
     ],
     queryFn: async () => {
       const token = await getToken();
@@ -56,10 +59,13 @@ function TransList({ searchTerm }) {
         yearFilter,
         monthFilter,
         categoryFilter,
+        page,
       );
     },
     placeholderData: keepPreviousData,
   });
+
+  console.log(transactions);
 
   const count = transactions?.count ?? 0;
 
@@ -180,6 +186,14 @@ function TransList({ searchTerm }) {
           )}
         </div>
       ))}
+      <div className="flex w-full justify-center items-center">
+        <Pagination
+          page={page}
+          setPage={setPage}
+          previous={transactions?.previous}
+          next={transactions?.next}
+        />
+      </div>
     </div>
   );
 }
