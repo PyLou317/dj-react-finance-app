@@ -60,12 +60,12 @@ export default function CategoriesPage() {
           <div className="flex flex-col">
             <div className="flex items-center justify-between mb-8">
               <MainTitle name="Category Breakdown" />
-              <FilterComponent
-                openFilters={openFilters}
-                clearFilters={clearFilters}
-                setOpenFilters={setOpenFilters}
-              />
             </div>
+            <FilterComponent
+              openFilters={openFilters}
+              clearFilters={clearFilters}
+              setOpenFilters={setOpenFilters}
+            />
 
             {/* Filter Dropdown Panel */}
             {openFilters && (
