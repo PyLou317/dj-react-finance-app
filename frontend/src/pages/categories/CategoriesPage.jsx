@@ -8,12 +8,14 @@ import CategoryRow from '../dashboard/categoryRow';
 import FilterWrapper from '../transactions/FilterWrapper';
 import FilterComponent from '../transactions/FilterComponent';
 import CategoryDonutChart from './CategoriesDonutChart';
+import Modal from '../../components/Modal';
 
 export default function CategoriesPage() {
   const [openFilters, setOpenFilters] = useState(false);
   const [monthFilter, setMonthFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const { categoryId } = useParams();
+  const [isOpen, setIsOpen] = useState(false);
   const { getToken } = useAuth();
 
   const { isPending: categoryTotalsIsPending, data: categoryTotals } = useQuery(
@@ -31,11 +33,6 @@ export default function CategoriesPage() {
   const year = today.getFullYear();
   const years = Array.from({ length: 3 }, (_, i) => year - i);
 
-  function clearFilters() {
-    setYearFilter('');
-    setMonthFilter('');
-  }
-
   const months = [
     'January',
     'February',
@@ -50,6 +47,15 @@ export default function CategoriesPage() {
     'November',
     'December',
   ];
+
+  function clearFilters() {
+    setYearFilter('');
+    setMonthFilter('');
+  }
+
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
+
   return (
     <div>
       {categoryId ? (
@@ -58,9 +64,16 @@ export default function CategoriesPage() {
         <div className="max-w-7xl mx-auto">
           {/* Page Header */}
           <div className="flex flex-col">
-            <div className="flex items-center justify-between mb-8">
+            <div className="grid grid-cols-2 sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
               <MainTitle name="Category Breakdown" />
+              <button
+                className="flex items-center gap-2 max-w-[150px] ms-auto bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-6 rounded-xl transition-colors cursor-pointer disabled:opacity-50"
+                onClick={openModal}
+              >
+                Add Category
+              </button>
             </div>
+
             <FilterComponent
               openFilters={openFilters}
               clearFilters={clearFilters}
@@ -136,6 +149,84 @@ export default function CategoriesPage() {
           </div>
         </div>
       )}
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(!isOpen)}
+        title="Add New Category"
+      >
+        <form
+        //   onSubmit={handleSubmit}
+          className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg"
+        >
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">
+            Add New Category
+          </h2>
+
+          {/* {message && (
+            <div
+              className={`p-3 mb-4 rounded ${message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}
+            >
+              {message}
+            </div>
+          )} */}
+
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Name
+            </label>
+            <input
+              type="text"
+              name="name"
+            //   value={formData.name}
+            //   onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g. Groceries"
+            />
+          </div>
+
+          <div className="mb-4 flex gap-4">
+            <div className="flex-1">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Color
+              </label>
+              <input
+                type="color"
+                name="color"
+                // value={formData.color}
+                // onChange={handleChange}
+                className="w-full h-10 cursor-pointer rounded-lg"
+              />
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Parent Category (Optional)
+            </label>
+            <select
+              name="parent"
+            //   value={formData.parent}
+            //   onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select Parent</option>
+              {/* {parentCategories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))} */}
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-200"
+          >
+            Create Category
+          </button>
+        </form>
+      </Modal>
     </div>
   );
 }
