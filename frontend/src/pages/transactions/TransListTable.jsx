@@ -1,9 +1,8 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchCategories } from '../../api/categories';
-import { fetchTransactions } from '../../api/transactions';
 
 import CompanyLogo from '../../components/Logo';
 import { Link } from 'react-router-dom';
@@ -11,17 +10,24 @@ import { Loader } from 'lucide-react';
 
 import '../../utils/toolTipStyles.css';
 import FilterDropDown from './FilterDropDown';
-import TransactionStatBar from './TransactionStatBar';
 import FilterComponent from './FilterComponent';
 import Pagination from '../../components/Pagination';
+import SearchBar from '../../components/searchbar/SearchBar';
 
-function TransList({ searchTerm }) {
+function TransList({
+  transactions,
+  setSearchTerm,
+  monthFilter,
+  setMonthFilter,
+  yearFilter,
+  setYearFilter,
+  categoryFilter,
+  setCategoryFilter,
+  page,
+  setPage,
+  isPending,
+}) {
   const [openFilters, setOpenFilters] = useState(false);
-  const [monthFilter, setMonthFilter] = useState('');
-  const [yearFilter, setYearFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
-  const [page, setPage] = useState(1);
-
   const { getToken } = useAuth();
 
   const {
@@ -36,53 +42,6 @@ function TransList({ searchTerm }) {
     },
     placeholderData: keepPreviousData,
   });
-
-  const {
-    isPending,
-    isError,
-    data: transactions,
-    error,
-  } = useQuery({
-    queryKey: [
-      'transactions',
-      searchTerm,
-      yearFilter,
-      monthFilter,
-      categoryFilter,
-      page,
-    ],
-    queryFn: async () => {
-      const token = await getToken();
-      return fetchTransactions(
-        token,
-        searchTerm,
-        yearFilter,
-        monthFilter,
-        categoryFilter,
-        page,
-      );
-    },
-    placeholderData: keepPreviousData,
-  });
-
-  console.log(transactions);
-
-  const count = transactions?.count ?? 0;
-
-  const groupedTransactions = useMemo(() => {
-    return transactions?.results
-      ? transactions.results.reduce((groups, trans) => {
-          const date = trans.date_posted;
-          if (!groups[date]) {
-            groups[date] = [];
-          }
-          groups[date].push(trans);
-          return groups;
-        }, {})
-      : {};
-  }, [transactions]);
-
-  const totalSum = Number(transactions?.total_sum);
 
   const today = new Date();
   const year = today.getFullYear();
@@ -103,13 +62,20 @@ function TransList({ searchTerm }) {
     setCategoryFilter('');
   }
 
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+  };
+
   return (
     <div>
-      <FilterComponent
-        openFilters={openFilters}
-        clearFilters={clearFilters}
-        setOpenFilters={setOpenFilters}
-      />
+      <div className="flex flex-col justify-between items-center sm:flex-row mb-6">
+        <FilterComponent
+          openFilters={openFilters}
+          clearFilters={clearFilters}
+          setOpenFilters={setOpenFilters}
+        />
+        <SearchBar onSearch={handleSearch} />
+      </div>
 
       {openFilters ? (
         <FilterDropDown
@@ -125,67 +91,63 @@ function TransList({ searchTerm }) {
         />
       ) : null}
 
-      <TransactionStatBar
-        isPending={isPending}
-        count={count}
-        totalSum={totalSum}
-      />
-
-      {Object.keys(groupedTransactions).map((date) => (
-        <div key={date} className="mb-6">
-          <h3 className="py-1 text-xs font-bold text-gray-500 uppercase sticky top-0">
-            {new Date(date).toLocaleDateString(undefined, {
-              weekday: 'long',
-              month: 'short',
-              day: 'numeric',
-            })}
-          </h3>
-          {isPending ? (
-            <Loader />
-          ) : (
-            <ul>
-              {groupedTransactions[date].map((trans) => (
-                <Link to={`${trans.id}`} key={trans.id}>
-                  <li
-                    key={trans.id}
-                    className="flex flex-row gap-4 p-2 items-center bg-white rounded-xl my-2 hover:scale-102 tooltip"
-                  >
-                    <div className="tooltip-content cursor-pointer truncate max-w-[250px]">
-                      {trans.notes != '' && trans.notes != ' '
-                        ? trans.notes
-                        : 'No notes'}
-                    </div>
-                    <CompanyLogo name={trans.payee} className="w-8 h-8" />
-                    <div className="flex flex-col min-w-0 flex-1">
-                      <span className="font-semibold truncate text-[14px]">
-                        {trans.payee}
-                      </span>
-                      {trans.category.parent ? (
-                        <span className="text-[14px] text-gray-400 uppercase tracking-wider truncate">
-                          {trans.category?.parent?.name} - {trans.category.name}
-                        </span>
-                      ) : (
-                        <span className="text-[14px] text-gray-400 uppercase tracking-wider truncate">
-                          {trans.category?.name}
-                        </span>
-                      )}
-                    </div>
-                    <span
-                      className={`ml-auto font-semibold text-[16px] ${trans.amount >= 0 ? 'text-green-500' : 'text-gray-900'}`}
+      {transactions &&
+        Object.keys(transactions).map((date) => (
+          <div key={date} className="mb-6">
+            <h3 className="py-1 text-xs font-bold text-gray-500 uppercase sticky top-0">
+              {new Date(date).toLocaleDateString(undefined, {
+                weekday: 'long',
+                month: 'short',
+                day: 'numeric',
+              })}
+            </h3>
+            {isPending ? (
+              <Loader />
+            ) : (
+              <ul>
+                {transactions[date].map((trans) => (
+                  <Link to={`${trans.id}`} key={trans.id}>
+                    <li
+                      key={trans.id}
+                      className="flex flex-row gap-4 p-2 items-center bg-white rounded-xl my-2 hover:scale-102 tooltip"
                     >
-                      {trans.amount >= 0 ? '+' : '-'}$
-                      {Math.abs(trans.amount).toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </span>
-                  </li>
-                </Link>
-              ))}
-            </ul>
-          )}
-        </div>
-      ))}
+                      <div className="tooltip-content cursor-pointer truncate max-w-[250px]">
+                        {trans.notes != '' && trans.notes != ' '
+                          ? trans.notes
+                          : 'No notes'}
+                      </div>
+                      <CompanyLogo name={trans.payee} className="w-8 h-8" />
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <span className="font-semibold truncate text-[14px]">
+                          {trans.payee}
+                        </span>
+                        {trans.category.parent ? (
+                          <span className="text-[14px] text-gray-400 uppercase tracking-wider truncate">
+                            {trans.category?.parent?.name} -{' '}
+                            {trans.category.name}
+                          </span>
+                        ) : (
+                          <span className="text-[14px] text-gray-400 uppercase tracking-wider truncate">
+                            {trans.category?.name}
+                          </span>
+                        )}
+                      </div>
+                      <span
+                        className={`ml-auto font-semibold text-[16px] ${trans.amount >= 0 ? 'text-green-500' : 'text-gray-900'}`}
+                      >
+                        {trans.amount >= 0 ? '+' : '-'}$
+                        {Math.abs(trans.amount).toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </span>
+                    </li>
+                  </Link>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
       <div className="flex w-full justify-center items-center">
         <Pagination
           page={page}

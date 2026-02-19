@@ -11,6 +11,8 @@ export default function FilterDropDown({
   setCategoryFilter,
   categoryFilter,
   categoryData,
+  openFilters,
+  clearFilters,
 }) {
   const months = [
     'January',
@@ -29,14 +31,20 @@ export default function FilterDropDown({
 
   return (
     <div className="mb-6">
-      {/* Container Card */}
       <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-        {/* Title */}
         <h3 className="text-sm font-semibold text-gray-900 mb-5">
           Filter Transactions
         </h3>
 
-        {/* Responsive Grid Layout */}
+        {openFilters ? (
+          <button
+            className="text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors cursor-pointer"
+            onClick={clearFilters}
+          >
+            Clear all
+          </button>
+        ) : null}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <FilterWrapper
             name="year"

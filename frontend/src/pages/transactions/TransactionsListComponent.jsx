@@ -1,23 +1,25 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Outlet, useParams } from 'react-router-dom';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { syncTransactions } from '../../api/transactions';
+import { fetchTransactions } from '../../api/transactions';
 
 import TransList from './TransListTable';
-import SearchBar from '../../components/searchbar/SearchBar';
 import MainTitle from '../../components/MainTitle';
 import Loader from '../../components/Loader';
 import PageWrapper from '../../components/PageWrapper';
+import TransactionStatBar from './TransactionStatBar';
 
 export default function TransactionsPage() {
-  const [searchFilter, setSearchFilter] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [monthFilter, setMonthFilter] = useState('');
+  const [yearFilter, setYearFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [page, setPage] = useState(1);
   const { transactionsId } = useParams();
   const { getToken } = useAuth();
-
-  const handleSearch = (value) => {
-    setSearchFilter(value);
-  };
 
   const queryClient = useQueryClient();
   const syncTransMutation = useMutation({
@@ -34,6 +36,51 @@ export default function TransactionsPage() {
     },
   });
 
+  const {
+    isPending,
+    isError,
+    data: transactions,
+    error,
+  } = useQuery({
+    queryKey: [
+      'transactions',
+      searchTerm,
+      yearFilter,
+      monthFilter,
+      categoryFilter,
+      page,
+    ],
+    queryFn: async () => {
+      const token = await getToken();
+      return fetchTransactions(
+        token,
+        searchTerm,
+        yearFilter,
+        monthFilter,
+        categoryFilter,
+        page,
+      );
+    },
+    placeholderData: keepPreviousData,
+  });
+
+  const count = transactions?.count ?? 0;
+
+  const groupedTransactions = useMemo(() => {
+    return transactions?.results
+      ? transactions.results.reduce((groups, trans) => {
+          const date = trans.date_posted;
+          if (!groups[date]) {
+            groups[date] = [];
+          }
+          groups[date].push(trans);
+          return groups;
+        }, {})
+      : {};
+  }, [transactions]);
+
+  const totalSum = Number(transactions?.total_sum);
+
   const handleSyncTransactions = (e) => {
     e.preventDefault();
     syncTransMutation.mutate();
@@ -46,7 +93,7 @@ export default function TransactionsPage() {
       ) : (
         <PageWrapper>
           {/* Page Header Area */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <MainTitle name="Transactions" />
 
             {/* Sync Button */}
@@ -66,14 +113,29 @@ export default function TransactionsPage() {
             </button>
           </div>
 
-          {/* Search Bar - Contained */}
-          <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-6">
-            <SearchBar onSearch={handleSearch} />
+          <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-2">
+            <TransactionStatBar
+              isPending={isPending}
+              count={count}
+              totalSum={totalSum}
+            />
           </div>
 
-          {/* List Area - Card Container */}
           <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-            <TransList searchTerm={searchFilter} />
+            <TransList
+              transactions={groupedTransactions}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              monthFilter={monthFilter}
+              setMonthFilter={setMonthFilter}
+              yearFilter={yearFilter}
+              setYearFilter={setYearFilter}
+              categoryFilter={categoryFilter}
+              setCategoryFilter={setCategoryFilter}
+              page={page}
+              setPage={setPage}
+              isPending={isPending}
+            />
           </div>
         </PageWrapper>
       )}

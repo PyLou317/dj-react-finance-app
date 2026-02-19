@@ -3,7 +3,7 @@ import { ListFilterPlus } from 'lucide-react';
 export default function FilterBtn({ onClick, isOpen }) {
   return (
     <div
-      className="flex flex-row mb-2 gap-1 justify-start items-center text-sm cursor-pointer"
+      className="flex flex-row gap-1 justify-start items-center text-sm cursor-pointer"
       onClick={onClick}
     >
       <ListFilterPlus size={15} />{' '}
