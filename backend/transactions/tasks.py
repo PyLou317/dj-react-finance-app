@@ -40,7 +40,6 @@ def sync_simplefin(days):
 
         with transaction.atomic():
             for acc_data in data.get('accounts', []):
-                print("account data: ", acc_data)
                 # Organization Sync
                 org_info = acc_data.get('org', {})
                 org, _ = Organization.objects.update_or_create(
