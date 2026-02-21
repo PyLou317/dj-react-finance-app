@@ -92,8 +92,8 @@ export default function TransDetailPage() {
 
   function submitCategoryChange() {
     const payload = {
-      transactionId: String(transData.id),
-      categoryId: String(categoryId),
+      transactionId: transData.id,
+      categoryId: categoryId,
     };
 
     updateTransCategoryMutation.mutate(payload);
@@ -107,6 +107,29 @@ export default function TransDetailPage() {
 
     updateTransNotesMutation.mutate(payload);
   }
+
+  const sortedCategories = categoryData?.slice().sort((a, b) => {
+    // Determine the "Group Name" for each item.
+    // If it's a child, use parent.name. If it's a parent, use its own name.
+    const groupA = a.parent ? a.parent.name : a.name;
+    const groupB = b.parent ? b.parent.name : b.name;
+
+    const groupCompare = groupA.localeCompare(groupB, undefined, {
+      sensitivity: 'base',
+    });
+
+    if (groupCompare !== 0) {
+      return groupCompare;
+    }
+
+    // If they belong to the same group:
+    // Sort the actual Parent to the very top of its own group
+    if (!a.parent) return -1;
+    if (!b.parent) return 1;
+
+    // Otherwise, sort children alphabetically within the group
+    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+  });
 
   return (
     <div className="max-w-md mx-auto bg-gray-50 pb-8">
@@ -134,19 +157,19 @@ export default function TransDetailPage() {
         </div>
         <h2 className="text-xl font-bold text-gray-900">{transData?.payee}</h2>
         {!isEditing ? (
-          <div className="flex flex-row text-sm mb-4 justify-center items-center gap-2">
-            <p className="text-gray-500">
-              {transData?.category?.parent
-                ? capitalize(transData?.category?.parent?.name) +
-                  ' ' +
-                  capitalize(transData?.category?.name)
-                : capitalize(transData?.category?.name)}
-            </p>
+          <div className="flex text-sm mt-1 mb-4 justify-center items-center gap-2">
             <button
               id="editBtn"
               onClick={() => setIsEditing(true)}
-              className="text-blue-400 cursor-pointer"
+              className="text-blue-400 cursor-pointer flex flex-row gap-1"
             >
+              <span className="text-gray-500">
+                {transData?.category?.parent
+                  ? capitalize(transData?.category?.parent?.name) +
+                    ' ' +
+                    capitalize(transData?.category?.name)
+                  : capitalize(transData?.category?.name)}
+              </span>
               <Pencil size={16} />
             </button>
           </div>
@@ -157,7 +180,7 @@ export default function TransDetailPage() {
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
             >
-              {categoryData.map((cat) => (
+              {sortedCategories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat?.parent
                     ? `${cat.parent.name}: ${capitalize(cat.name)}`
