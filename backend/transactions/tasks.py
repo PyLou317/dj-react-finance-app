@@ -78,15 +78,8 @@ def sync_simplefin(days):
                         posted_date = datetime.fromtimestamp(raw_posted).date()
                     else:
                         posted_date = parse_date(str(raw_posted))
-                    
-                    # Categorize transaction
-                    category = categorize_transaction(
-                        description=txn_data['description'], 
-                        payee=txn_data['payee'],
-                        db_cache=db_cache,
-                        )
 
-                    Transaction.objects.update_or_create(
+                    obj, created = Transaction.objects.get_or_create(
                         external_id=txn_data['id'],
                         defaults={
                             'account': account,
@@ -96,9 +89,19 @@ def sync_simplefin(days):
                             'description': txn_data['description'],
                             'is_pending': txn_data.get('pending', False),
                             'extra_data': txn_data.get('extra', {}),
-                            'category': category,
+                            'category': categorize_transaction(
+                                description=txn_data['description'], 
+                                payee=txn_data['payee'],
+                                db_cache=db_cache,
+                            ),
                         }
                     )
+                    
+                    if not created:
+                        obj.amount = txn_data['amount']
+                        obj.is_pending = txn_data.get('pending', False)
+                        obj.extra_data = txn_data.get('extra', {})
+                        obj.save()
         
         return "Sync successful"
     except Exception as e:
