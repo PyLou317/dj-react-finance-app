@@ -153,13 +153,16 @@ class ListTBudgetView(APIView):
         return Response(serializer.data)
 
 
-class CategoryListView(APIView):
+class CategoryListView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None):
         queryset = Category.objects.all()
         serializer = CategorySerializer(queryset, many=True)
         return Response(serializer.data)
+    
+    def perform_create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
 
 class CategoryTotalsView(APIView):
