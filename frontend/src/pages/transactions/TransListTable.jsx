@@ -68,13 +68,15 @@ function TransList({
 
   return (
     <div>
-      <div className="flex flex-col justify-between items-center sm:flex-row mb-6">
+      <div className="flex flex-col justify-between items-center mb-6">
+        <div className='mb-6 w-full'>
+          <SearchBar onSearch={handleSearch} />
+        </div>
         <FilterComponent
           openFilters={openFilters}
           clearFilters={clearFilters}
           setOpenFilters={setOpenFilters}
         />
-        <SearchBar onSearch={handleSearch} />
       </div>
 
       {openFilters ? (
