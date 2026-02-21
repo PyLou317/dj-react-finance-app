@@ -10,7 +10,7 @@ import CategoryRow from '../dashboard/categoryRow';
 import FilterWrapper from '../transactions/FilterWrapper';
 import FilterComponent from '../transactions/FilterComponent';
 import CategoryDonutChart from './CategoriesDonutChart';
-import Modal from '../../components/Modal';
+import AddCategoryModal from './AddCategoryModal';
 
 export default function CategoriesPage() {
   const [openFilters, setOpenFilters] = useState(false);
@@ -99,11 +99,13 @@ export default function CategoriesPage() {
               </button>
             </div>
 
-            <FilterComponent
-              openFilters={openFilters}
-              clearFilters={clearFilters}
-              setOpenFilters={setOpenFilters}
-            />
+            <div className="mb-2">
+              <FilterComponent
+                openFilters={openFilters}
+                clearFilters={clearFilters}
+                setOpenFilters={setOpenFilters}
+              />
+            </div>
 
             {/* Filter Dropdown Panel */}
             {openFilters && (
@@ -140,9 +142,7 @@ export default function CategoriesPage() {
             )}
           </div>
 
-          {/* Main Content Area */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Chart Column */}
             <div className="lg:col-span-1">
               <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm sticky top-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-6">
@@ -152,7 +152,6 @@ export default function CategoriesPage() {
               </div>
             </div>
 
-            {/* List Column */}
             <div className="lg:col-span-2">
               <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -174,104 +173,11 @@ export default function CategoriesPage() {
           </div>
         </div>
       )}
-      <Modal
+      <AddCategoryModal
         isOpen={isOpen}
-        onClose={() => setIsOpen(!isOpen)}
-        title="Add Category"
-      >
-        <form
-          //   onSubmit={handleSubmit}
-          className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg"
-        >
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">
-            Add New Category
-          </h2>
-
-          {/* {message && (
-            <div
-              className={`p-3 mb-4 rounded ${message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}
-            >
-              {message}
-            </div>
-          )} */}
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              //   value={formData.name}
-              //   onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g. Groceries"
-            />
-          </div>
-
-          <div className={`${addCatParent ? 'mb-2' : 'mb-6'}`}>
-            <div className="flex flex-row justify-between items-center mb-2">
-              <label className="block text-gray-700 text-sm font-bold">
-                Parent Category
-              </label>
-              <button
-                type="submit"
-                className="text-[10px] sm:text-[14px] bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-200"
-                onClick={(e) => toggleAddCatParent(e)}
-              >
-                {addCatParent ? 'Cancel' : 'Add Parent'}
-              </button>
-            </div>
-            {!addCatParent ? (
-              <select
-                name="parent"
-                //   value={formData.parent}
-                //   onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select Parent</option>
-                {uniqueParents?.map((cat) => (
-                  <option key={cat?.parent?.id} value={cat?.parent?.id}>
-                    {cat?.parent?.name}
-                  </option>
-                ))}
-              </select>
-            ) : null}
-          </div>
-
-          <div
-            className={`${addCatParent ? 'opacity-100' : 'opacity-0 hidden'} rounded-lg transition duration-300 ease-in-out`}
-          >
-            <input
-              type="text"
-              name="name"
-              //   value={formData.name}
-              //   onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g. Food & Drink"
-            />
-          </div>
-          {addCatParent ? (
-            <button
-              type="submit"
-              className="mt-2 w-full bg-neutral-800 text-white py-1 px-4 rounded-lg hover:bg-neutral-900 transition duration-200"
-            >
-              Add Parent
-            </button>
-          ) : null}
-
-          <div className="mt-8">
-            <button
-              type="submit"
-              className="w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-200"
-            >
-              Create Category
-            </button>
-          </div>
-        </form>
-      </Modal>
+        setIsOpen={setIsOpen}
+        uniqueParents={uniqueParents}
+      />
     </div>
   );
 }
