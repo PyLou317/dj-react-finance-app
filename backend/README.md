@@ -17,7 +17,7 @@ Database - PostgreSQL, Redis, Celery Worker
 📦 Installation & Setup
 1. Backend (Django)
 
-Bash
+```bash
 # Clone the repository
 git clone https://github.com/PyLou317/dj-react-finance-app.git
 
@@ -32,8 +32,13 @@ python manage.py migrate
 
 # Start the server
 python manage.py runserver
+```
 
-2. Frontend (React)Bash# Navigate to frontend folder
+2. Frontend (React)
+
+```Bash
+
+# Navigate to frontend folder
 cd frontend
 
 # Install dependencies
@@ -41,6 +46,7 @@ npm install
 
 # Start the development server
 npm start
+```
 
 
 📈 Roadmap / Future Enhancements
