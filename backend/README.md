@@ -49,13 +49,16 @@ npm start
 ```
 
 
-📈 Roadmap / Future Enhancements. 
-[ ] Export functionality for CSV/PDF reports.
+📈 Roadmap / Future Enhancements
+
+[ ] Export functionality for CSV/PDF reports
 
 
-👤 AuthorLucas Patriquin. 
-LinkedIn: https://www.linkedin.com/in/lucas-patriquin/. 
-Email: lucas.patriquin@gmail.com. 
+👤 AuthorLucas Patriquin
+
+LinkedIn: https://www.linkedin.com/in/lucas-patriquin/
+
+Email: lucas.patriquin@gmail.com
 
 
 ![Finance App Dashboard](./assets/EFMobileView3.png)
