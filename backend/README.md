@@ -52,4 +52,4 @@ LinkedIn: https://www.linkedin.com/in/lucas-patriquin/
 Email: lucas.patriquin@gmail.com
 
 
-![Finance App Dashboard](./assets/dashboard.png)
+![Finance App Dashboard](./assets/EFMobileView3.png)
