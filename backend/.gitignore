@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*$py.class
+
+# Environment
+.env
+.env.bak
+.venv
+env/
+venv/
+ENV/
+bin/
+include/
+lib/
+lib64/
+
+# Django-specific files
+*.log
+*.pot
+*.mo
+db.sqlite3
+local_settings.py
+media/
+
+# IDE-specific files and directories (optional)
+.idea/  # PyCharm
+.vscode/ # VS Code
+*.swp   # Vim
+
+# Collected static files (if applicable to your setup)
+static/ 
+staticfiles/
+
+# OS-specific files
+.DS_Store # macOS
