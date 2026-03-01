@@ -6,9 +6,8 @@ from celery import shared_task
 from django.utils.dateparse import parse_date
 from django.utils.timezone import make_aware
 from django.db import transaction
-from .models import Organization, Account, Transaction, Category, Budget
+from .models import Organization, Account, Transaction
 from .utils import categorize_transaction
-from datetime import date
     
     
 @shared_task
@@ -71,35 +70,36 @@ def sync_simplefin(days):
                 # Transaction Sync
                 transactions_list = acc_data.get('transactions', [])
                 
-                for txn_data in transactions_list: # Variable now correctly scoped
+                for txn_data in transactions_list:
                     raw_posted = txn_data.get('posted')
                     if isinstance(raw_posted, (int, float)):
                         posted_date = datetime.fromtimestamp(raw_posted).date()
                     else:
                         posted_date = parse_date(str(raw_posted))
+                        
+                    lookup_fields = {
+                        'amount': txn_data['amount'],
+                        'date_posted': posted_date,
+                        'description': txn_data['description'],
+                        'account': account,
+                    }
 
                     obj, created = Transaction.objects.get_or_create(
-                        external_id=txn_data['id'],
+                        **lookup_fields,
                         defaults={
-                            'account': account,
-                            'amount': txn_data['amount'],
-                            'date_posted': posted_date,
+                            'external_id': txn_data['id'],
                             'payee': txn_data['payee'],
-                            'description': txn_data['description'],
                             'is_pending': txn_data.get('pending', False),
                             'extra_data': txn_data.get('extra', {}),
-                            'category': categorize_transaction(
-                                description=txn_data['description'], 
-                                payee=txn_data['payee'],
-                                db_cache=db_cache,
-                            ),
                         }
                     )
                     
-                    if not created:
-                        obj.amount = txn_data['amount']
-                        obj.is_pending = txn_data.get('pending', False)
-                        obj.extra_data = txn_data.get('extra', {})
+                    if created:
+                        obj.category = categorize_transaction(
+                            description=txn_data['description'], 
+                            payee=txn_data['payee'],
+                            db_cache=db_cache,
+                        )
                         obj.save()
         
         return "Sync successful"
