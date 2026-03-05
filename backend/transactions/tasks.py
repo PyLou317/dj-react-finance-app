@@ -112,5 +112,5 @@ def initial_sync(days=365):
     return sync_simplefin(days)
 
 @shared_task
-def daily_sync(days=5):
+def daily_sync(days=365):
     return sync_simplefin(days)
