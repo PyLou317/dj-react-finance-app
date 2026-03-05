@@ -30,7 +30,7 @@ export default function AccountCardCarousel() {
     <>
       <Title name="My Accounts" />
       <div className="flex flex-row w-full gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
-        {isPending
+        {isPending || isFetching
           ? skeletonCards.map((i) => <SkeletonAccountCard key={i} />)
           : sortedAccounts?.map((account) => (
               <AccountCard
