@@ -49,7 +49,7 @@ def sync_simplefin(days):
                     }
                 )
 
-                # Account Sync (with Timezone Fix)
+                # Account Sync
                 b_date = None
                 if acc_data.get('balance-date'):
                     b_date = make_aware(datetime.fromtimestamp(acc_data['balance-date']))
@@ -108,7 +108,7 @@ def sync_simplefin(days):
     
 
 @shared_task
-def initial_sync(days=365):
+def initial_sync(days=90):
     return sync_simplefin(days)
 
 @shared_task

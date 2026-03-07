@@ -11,6 +11,7 @@ urlpatterns = [
     path('dashboard/transactions/', DashboardTransactionView.as_view(), name='recent-transactions'),
     path('budgets/', ListTBudgetView.as_view(), name='budgets'),
     path('categories/', CategoryListView.as_view(), name='categories'),
+    path('category/<int:pk>/', CategoryDetailView.as_view(), name='category-detail'),
     path('category-totals/', CategoryTotalsView.as_view(), name='category-totals'),
     
     # SimpleFIN

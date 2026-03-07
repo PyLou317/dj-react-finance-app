@@ -1,10 +1,21 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@clerk/clerk-react';
 import Modal from '../../components/Modal';
 import { useState } from 'react';
 import { addCategory } from '../../api/categories';
 
-export default function AddCategoryModal({ isOpen, setIsOpen, uniqueParents }) {
-  const [formData, setFormData] = useState({ name: '' });
+export default function AddCategoryModal({
+  isOpen,
+  setIsOpen,
+  categoryParents,
+}) {
+  const [formData, setFormData] = useState({
+    name: '',
+    parent: '',
+  });
+
+  const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   const addCategoryMutation = useMutation({
     mutationFn: async (payload) => {
@@ -13,17 +24,25 @@ export default function AddCategoryModal({ isOpen, setIsOpen, uniqueParents }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['categories']);
-      setIsEditing(false);
+      setFormData({ name: '', parent: '' });
     },
   });
 
-  function submitAddCategory() {
-    const payload = {
-      categoryId: String(categoryId),
-    };
+  function handleInputChange(e) {
+    const { name, value } = e.target;
+    console.log(value);
 
-    addCategoryMutation.mutate(payload);
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    addCategoryMutation.mutate(formData);
+  }
+
   return (
     <Modal
       isOpen={isOpen}
@@ -31,7 +50,7 @@ export default function AddCategoryModal({ isOpen, setIsOpen, uniqueParents }) {
       title="Add Category"
     >
       <form
-        onSubmit={submitAddCategory}
+        onSubmit={handleSubmit}
         className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg"
       >
         <h2 className="text-2xl font-bold mb-6 text-gray-800">
@@ -54,10 +73,10 @@ export default function AddCategoryModal({ isOpen, setIsOpen, uniqueParents }) {
             type="text"
             name="name"
             value={formData.name}
-            // onChange={setCategoryId()}
+            onChange={handleInputChange}
             required
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="e.g. Groceries"
+            placeholder="e.g. Food & Drink"
           />
         </div>
 
@@ -69,14 +88,14 @@ export default function AddCategoryModal({ isOpen, setIsOpen, uniqueParents }) {
           </div>
           <select
             name="parent"
-            //   value={formData.parent}
-            //   onChange={handleChange}
+            value={formData.parent}
+            onChange={handleInputChange}
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select Parent</option>
-            {uniqueParents?.map((cat) => (
-              <option key={cat?.parent?.id} value={cat?.parent?.id}>
-                {cat?.parent?.name}
+            {categoryParents?.map((cat) => (
+              <option key={cat?.id} value={cat?.id}>
+                {cat?.name}
               </option>
             ))}
           </select>
@@ -87,7 +106,7 @@ export default function AddCategoryModal({ isOpen, setIsOpen, uniqueParents }) {
             type="submit"
             className="w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-200"
           >
-            Create Category
+            {addCategoryMutation.isPending ? 'Creating...' : 'Create Category'}
           </button>
         </div>
       </form>

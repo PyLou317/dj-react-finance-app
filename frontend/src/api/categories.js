@@ -52,24 +52,43 @@ export const fetchCategories = async (token) => {
   }
 };
 
-export const addCategory = async (token, categoryId) => {
+export const addCategory = async (token, payload) => {
   const url = `api/categories/`;
 
   try {
     const response = await fetch(`${apiUrl}${url}`, {
-      method: 'PUT',
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        category: categoryId,
-      }),
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to add category: ${response.statusText}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Network or Server Error:', error);
+    throw error;
+  }
+};
+
+
+export const fetchCategoryDetails = async (token, Id) => {
+  try {
+    const response = await fetch(`${apiUrl}api/category/${Id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
     });
 
     if (!response.ok) {
       throw new Error(
-        `Failed to add category: ${response.statusText}`,
+        `Failed to fetch category data: ${response.statusText}`,
       );
     }
 

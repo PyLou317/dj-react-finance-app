@@ -49,6 +49,11 @@ class BudgetSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    parent = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(), 
+        allow_null=True, 
+        required=False
+    )
     category_sum = serializers.DecimalField(
         max_digits=19, 
         decimal_places=2, 
@@ -59,3 +64,7 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id', 'name', 'color', 'icon', 'parent', 'category_sum']
         depth = 2
+        
+    def to_representation(self, instance):
+        self.fields['parent'] = CategorySerializer(read_only=True)
+        return super().to_representation(instance)

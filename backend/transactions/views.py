@@ -162,8 +162,17 @@ class CategoryListView(generics.ListCreateAPIView):
         serializer = CategorySerializer(queryset, many=True)
         return Response(serializer.data)
     
-    # def perform_create(self, request, *args, **kwargs):
-    #     return super().create(request, *args, **kwargs)
+    
+class CategoryDetailView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    
+    # def get_serializer_class(self):
+    #     if self.request.method in ['PUT', 'PATCH']:
+    #         return CategorySerializer
+    #     return TransactionSerializer
+    
+    def get_queryset(self):
+        return Category.objects.filter(transactions__account__user=self.request.user)
 
 
 class CategoryTotalsView(APIView):
