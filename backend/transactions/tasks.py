@@ -1,7 +1,7 @@
 import os
 import requests
 import time
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from celery import shared_task
 from django.utils.dateparse import parse_date
 from django.utils.timezone import make_aware
@@ -50,9 +50,16 @@ def sync_simplefin(days):
                 )
 
                 # Account Sync
+                now = timezone.now()
+                
                 b_date = None
                 if acc_data.get('balance-date'):
-                    b_date = make_aware(datetime.fromtimestamp(acc_data['balance-date']))
+                    raw_date = make_aware(datetime.fromtimestamp(acc_data['balance-date']))
+                    
+                    if raw_date > now + timedelta(days=1):
+                        b_date = now
+                    else: 
+                        b_date = raw_date
 
                 account, _ = Account.objects.update_or_create(
                     external_id=acc_data['id'],
@@ -112,5 +119,5 @@ def initial_sync(days=90):
     return sync_simplefin(days)
 
 @shared_task
-def daily_sync(days=6):
+def daily_sync(days=90):
     return sync_simplefin(days)
