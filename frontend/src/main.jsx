@@ -13,6 +13,7 @@ import DashboardPage from './pages/dashboard/DashboardPage';
 import TransactionsPage from './pages/transactions/TransactionsPage.jsx';
 import TransactionDetailPage from './pages/transactions/TransactionDetailPage.jsx';
 import CategoriesPage from './pages/categories/CategoriesPage.jsx';
+import SettingsPage from './pages/Settings/SettingsPage.jsx';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -37,6 +38,7 @@ createRoot(document.getElementById('root')).render(
                 />
               </Route>
               <Route path="categories" element={<CategoriesPage />} />
+              <Route path="settings" element={<SettingsPage />} />
             </Route>
           </Routes>
         </ClerkProvider>

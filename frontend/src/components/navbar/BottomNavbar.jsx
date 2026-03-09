@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom'; // Ensure this import is correct based on your setup
+import { NavLink } from 'react-router-dom';
 import { CircleGauge, ListCheck, Tag } from 'lucide-react';
+import SettingsLink from './SettingsLink';
 
 export default function BottomNavbar() {
   const [routes] = useState([
@@ -25,7 +26,7 @@ export default function BottomNavbar() {
   ]);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 p-2 sm:p-4 sm:top-0 sm:left-0 sm:w-64 sm:h-screen sm:border-r sm:border-t-0">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 p-2 sm:p-4 sm:top-0 sm:left-0 sm:w-64 sm:h-screen sm:border-r sm:border-t-0 sm:flex sm:flex-col">
       <h1 className="hidden sm:block text-2xl font-bold text-teal-600 p-4 mb-6">
         FinanceApp
       </h1>
@@ -52,6 +53,9 @@ export default function BottomNavbar() {
           </li>
         ))}
       </ul>
+      <div className='hidden sm:flex mt-auto'>
+        <SettingsLink />
+      </div>
     </nav>
   );
 }

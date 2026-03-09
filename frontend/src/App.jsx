@@ -7,6 +7,7 @@ import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { UserContext } from './UserContext.js';
 
 import BottomNavbar from './components/navbar/BottomNavbar';
+import TopNavbar from './components/navbar/TopNavBar.jsx';
 import fetchUser from './api/users';
 
 function App() {
@@ -38,6 +39,9 @@ function App() {
           <BottomNavbar />
           <div className="flex-1 sm:pl-64">
             <div className="p-4 sm:p-6 mb-16 sm:mb-0">
+              <div className='sm:hidden'>
+                <TopNavbar />
+              </div>
               <Outlet />
             </div>
           </div>

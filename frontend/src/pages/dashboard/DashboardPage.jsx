@@ -5,6 +5,7 @@ import { fetchBudgets } from '../../api/budgets';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 
 import TopNavbar from '../../components/navbar/TopNavBar';
+import WelcomeHeader from '../../components/navbar/Header'
 import BudgetCard from './BudgetCard';
 import AccountCardCarousel from './AccountCardCarousel';
 import TransCard from './TransCard';
@@ -65,8 +66,8 @@ export default function DashboardPage() {
 
   return (
     <>
-      <TopNavbar />
       <PageWrapper>
+        <WelcomeHeader />
         <div className="mx-auto mb-2">
           <AccountCardCarousel />
         </div>
