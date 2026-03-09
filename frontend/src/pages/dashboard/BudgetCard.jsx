@@ -5,6 +5,7 @@ import Card from './Card';
 import Title from './CardTItle';
 import ProgressBar from './ProgressBar';
 import NoDataAvailable from './NoDataAvailable';
+import CardTitle from './CardTItle';
 
 export default function BudgetCard({ budgets, categoryTotals }) {
   const mergedData = useMemo(() => {
@@ -37,7 +38,7 @@ export default function BudgetCard({ budgets, categoryTotals }) {
   return (
     <Card>
       <div className="flex flex-col">
-        <Title name={title} />
+        <CardTitle name={title} />
         {mergedData?.length === 0 ? (
           <NoDataAvailable />
         ) : (

@@ -13,6 +13,7 @@ import FilterDropDown from './FilterDropDown';
 import FilterComponent from './FilterComponent';
 import Pagination from '../../components/Pagination';
 import SearchBar from '../../components/searchbar/SearchBar';
+import NoDataAvailable from '../dashboard/NoDataAvailable';
 
 function TransList({
   transactions,
@@ -69,7 +70,7 @@ function TransList({
   return (
     <div>
       <div className="flex flex-col justify-between items-center mb-6">
-        <div className='mb-6 w-full'>
+        <div className="mb-6 w-full">
           <SearchBar onSearch={handleSearch} />
         </div>
         <FilterComponent
@@ -93,7 +94,15 @@ function TransList({
         />
       ) : null}
 
-      {transactions &&
+      {isPending ? (
+        <div className="flex justify-center p-10">
+          <Loader className="animate-spin" />
+        </div>
+      ) : Object.keys(transactions).length === 0 ? (
+        <div className='pt-2 pb-8'>
+          <NoDataAvailable />
+        </div>
+      ) : (
         Object.keys(transactions).map((date) => (
           <div key={date} className="mb-6">
             <h3 className="py-1 text-xs font-bold text-gray-500 uppercase sticky top-0">
@@ -149,7 +158,8 @@ function TransList({
               </ul>
             )}
           </div>
-        ))}
+        ))
+      )}
       <div className="flex w-full justify-center items-center">
         <Pagination
           page={page}
