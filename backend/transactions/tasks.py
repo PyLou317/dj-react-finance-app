@@ -1,9 +1,10 @@
 import os
 import requests
 import time
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
 from celery import shared_task
 from django.utils.dateparse import parse_date
+from django.utils import timezone
 from django.utils.timezone import make_aware
 from django.db import transaction
 from .models import Organization, Account, Transaction
