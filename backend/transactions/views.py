@@ -94,7 +94,6 @@ class ListTransactionView(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         
-        # Combine into one database hit
         total = queryset.aggregate(
             total=Sum('amount')
         )['total'] or 0

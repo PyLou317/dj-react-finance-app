@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { syncTransactions } from '../../api/transactions';
 import Modal from '../../components/Modal';
 import { useState } from 'react';
+import Loader from '../../components/Loader';
 
 export default function ConnectAccountPage() {
   const [isOpen, setIsOpen] = useState(false);

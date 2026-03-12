@@ -160,16 +160,15 @@ function TransList({
           </div>
         ))
       )}
-      {transactions?.length > 0 ? (
-        <div className="flex w-full justify-center items-center">
-          <Pagination
-            page={page}
-            setPage={setPage}
-            previous={transactions?.previous}
-            next={transactions?.next}
-          />
-        </div>
-      ) : null}
+
+      <div className="flex w-full justify-center items-center">
+        <Pagination
+          page={page}
+          setPage={setPage}
+          previous={transactions?.previous}
+          next={transactions?.next}
+        />
+      </div>
     </div>
   );
 }
