@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+
 import {
   useQuery,
   keepPreviousData,
@@ -34,6 +35,8 @@ export default function TransDetailPage() {
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [categoryId, setCategoryId] = useState(null);
   const [categoryNotes, setCategoryNotes] = useState('');
+
+  const navigate = useNavigate();
 
   const { getToken } = useAuth();
   const { transactionId } = useParams();
@@ -131,15 +134,20 @@ export default function TransDetailPage() {
     return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
   });
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="max-w-md mx-auto bg-gray-50 pb-8">
       {/* Header */}
       <div className="bg-white px-4 pt-6 pb-4 flex justify-between items-center border-b border-gray-100">
-        <Link to="/transaction-list">
-          <button className="p-2 hover:bg-gray-100 rounded-full transition">
-            <ArrowLeft size={20} className="text-gray-600" />
-          </button>
-        </Link>
+        <button
+          className="p-2 hover:bg-gray-100 rounded-full transition"
+          onClick={goBack}
+        >
+          <ArrowLeft size={20} className="text-gray-600" />
+        </button>
         <h1 className="font-semibold text-gray-800">Transaction Details</h1>
         <button className="p-2 hover:bg-gray-100 rounded-full transition">
           <Share2 size={20} className="text-gray-600" />
