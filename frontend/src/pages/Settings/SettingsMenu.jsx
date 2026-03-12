@@ -9,9 +9,9 @@ export default function SettingsMenu() {
       link: 'profile',
     },
     {
-      key: 'connect-bank',
-      title: 'Sync Bank Data',
-      link: 'connect-account',
+      key: 'accounts',
+      title: 'Accounts',
+      link: 'accounts',
     },
   ]);
   return (

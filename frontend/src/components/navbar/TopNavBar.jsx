@@ -36,11 +36,11 @@ export default function TopNavbar() {
             </li>
             <li>
               <NavLink
-                to="/settings/connect-account"
+                to="/settings/accounts"
                 className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50"
                 onClick={() => setIsOpen(false)}
               >
-                Sync Bank Transactions
+                Accounts
               </NavLink>
             </li>
             <li className="bg-gray-50 p-2">

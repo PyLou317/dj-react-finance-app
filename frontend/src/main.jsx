@@ -44,7 +44,7 @@ createRoot(document.getElementById('root')).render(
                 <Route index element={<Navigate to="profile" replace />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route
-                  path="connect-account"
+                  path="accounts"
                   element={<ConnectAccountPage />}
                 />
               </Route>
