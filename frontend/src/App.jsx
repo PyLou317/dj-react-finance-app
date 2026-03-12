@@ -38,10 +38,8 @@ function App() {
         <SignedIn>
           <BottomNavbar />
           <div className="flex-1 sm:pl-64">
-            <div className="p-4 sm:p-6 mb-16 sm:mb-0">
-              <div className='sm:hidden'>
-                <TopNavbar />
-              </div>
+            <TopNavbar />
+            <div className="p-4 sm:p-6 mb-20 sm:mb-0">
               <Outlet />
             </div>
           </div>

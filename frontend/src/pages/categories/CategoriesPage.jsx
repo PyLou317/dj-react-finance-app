@@ -16,6 +16,7 @@ import FilterWrapper from '../transactions/FilterWrapper';
 import FilterComponent from '../transactions/FilterComponent';
 import CategoryDonutChart from './CategoriesDonutChart';
 import AddCategoryModal from './AddCategoryModal';
+import NoDataAvailable from '../dashboard/NoDataAvailable';
 
 export default function CategoriesPage() {
   const [monthFilter, setMonthFilter] = useState('');
@@ -103,36 +104,38 @@ export default function CategoriesPage() {
           </div>
 
           {/* Filter Dropdown Panel */}
-          <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <FilterWrapper
-              name="year"
-              selectOnChange={(e) => setYearFilter(e.target.value)}
-              selectValue={yearFilter}
-              cancel={() => setYearFilter('')}
-            >
-              <option value="">All Years</option>
-              {years.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </FilterWrapper>
+          {categoryTotals?.length > 0 ? (
+            <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FilterWrapper
+                name="year"
+                selectOnChange={(e) => setYearFilter(e.target.value)}
+                selectValue={yearFilter}
+                cancel={() => setYearFilter('')}
+              >
+                <option value="">All Years</option>
+                {years.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </FilterWrapper>
 
-            <FilterWrapper
-              name="month"
-              selectOnChange={(e) => setMonthFilter(e.target.value)}
-              selectValue={monthFilter}
-              cancel={() => setMonthFilter('')}
-              value={monthFilter.toLowerCase()}
-            >
-              <option value="">All Months</option>
-              {months.map((month) => (
-                <option key={month} value={month.toLowerCase()}>
-                  {month}
-                </option>
-              ))}
-            </FilterWrapper>
-          </div>
+              <FilterWrapper
+                name="month"
+                selectOnChange={(e) => setMonthFilter(e.target.value)}
+                selectValue={monthFilter}
+                cancel={() => setMonthFilter('')}
+                value={monthFilter.toLowerCase()}
+              >
+                <option value="">All Months</option>
+                {months.map((month) => (
+                  <option key={month} value={month.toLowerCase()}>
+                    {month}
+                  </option>
+                ))}
+              </FilterWrapper>
+            </div>
+          ) : null}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -141,7 +144,11 @@ export default function CategoriesPage() {
               <h2 className="text-lg font-semibold text-gray-900 mb-6">
                 Spending Distribution
               </h2>
-              <CategoryDonutChart categories={categoryTotals} />
+              {categoryTotals?.length > 0 ? (
+                <CategoryDonutChart categories={categoryTotals} />
+              ) : (
+                <NoDataAvailable />
+              )}
             </div>
           </div>
 
@@ -154,34 +161,36 @@ export default function CategoriesPage() {
                 <div className="text-center py-10 text-gray-500">
                   Loading...
                 </div>
-              ) : (
-                <>
-                  <select
-                    name="category"
-                    id="categoryDropDown"
-                    defaultValue="placeholder"
-                    value={categoryId}
-                    className="w-full p-2 border-2 border-teal-500 rounded-lg"
-                    onChange={handleCategorySelect}
-                  >
-                    <option disabled={true} value="placeholder">
-                      Select Category
+              ) : categoryTotals?.length > 0 ? (
+                <select
+                  name="category"
+                  id="categoryDropDown"
+                  defaultValue="placeholder"
+                  value={categoryId}
+                  className="w-full p-2 border-2 border-teal-500 rounded-lg"
+                  onChange={handleCategorySelect}
+                >
+                  <option disabled={true} value="placeholder">
+                    Select Category
+                  </option>
+                  {categoryTotals?.map((category) => (
+                    <option key={category.id} value={category?.id}>
+                      {category?.parent
+                        ? category?.parent?.name +
+                          ': ' +
+                          capitalize(category?.name)
+                        : category?.name}
                     </option>
-                    {categoryTotals?.map((category) => (
-                      <option key={category.id} value={category?.id}>
-                        {category?.parent
-                          ? category?.parent?.name +
-                            ': ' +
-                            capitalize(category?.name)
-                          : category?.name}
-                      </option>
-                    ))}
-                  </select>
-                </>
+                  ))}
+                </select>
+              ) : (
+                <NoDataAvailable />
               )}
-              <div className="mt-4 p-4 border border-gray rounded-xl">
-                Category Name
-              </div>
+              {categoryTotals?.length > 0 ? (
+                <div className="mt-4 p-4 border border-gray rounded-xl">
+                  Category Name
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

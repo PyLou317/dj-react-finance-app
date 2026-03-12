@@ -67,7 +67,6 @@ export default function DashboardPage() {
   return (
     <>
       <PageWrapper>
-        <WelcomeHeader />
         <div className="mx-auto mb-2">
           <AccountCardCarousel />
         </div>
