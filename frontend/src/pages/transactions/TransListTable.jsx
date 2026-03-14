@@ -6,7 +6,7 @@ import { fetchCategories } from '../../api/categories';
 
 import CompanyLogo from '../../components/Logo';
 import { Link } from 'react-router-dom';
-import { Loader } from 'lucide-react';
+import Loader from '../../components/Loader';
 
 import '../../utils/toolTipStyles.css';
 import FilterDropDown from './FilterDropDown';
@@ -27,6 +27,8 @@ function TransList({
   page,
   setPage,
   isPending,
+  searchParams,
+  setSearchParams,
 }) {
   const [openFilters, setOpenFilters] = useState(false);
   const { getToken } = useAuth();
@@ -96,7 +98,7 @@ function TransList({
 
       {isPending ? (
         <div className="flex justify-center p-10">
-          <Loader className="animate-spin" />
+          <Loader size={10} />
         </div>
       ) : Object.keys(transactions).length === 0 ? (
         <div className="pt-2 pb-8">
@@ -113,7 +115,7 @@ function TransList({
               })}
             </h3>
             {isPending ? (
-              <Loader />
+              <Loader size={15} />
             ) : (
               <ul>
                 {transactions[date].map((trans) => (
@@ -167,6 +169,7 @@ function TransList({
           setPage={setPage}
           previous={transactions?.previous}
           next={transactions?.next}
+          setSearchParams={setSearchParams}
         />
       </div>
     </div>

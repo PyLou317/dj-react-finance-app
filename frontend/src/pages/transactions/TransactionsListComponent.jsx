@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Outlet, useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchTransactions } from '../../api/transactions';
 
@@ -16,7 +17,10 @@ export default function TransactionsPage() {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [page, setPage] = useState(1);
   const { transactionsId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { getToken } = useAuth();
+
+  const currentPage = searchParams.get('page') || '1';
 
   const {
     isPending,
@@ -30,7 +34,7 @@ export default function TransactionsPage() {
       yearFilter,
       monthFilter,
       categoryFilter,
-      page,
+      currentPage,
     ],
     queryFn: async () => {
       const token = await getToken();
@@ -40,7 +44,7 @@ export default function TransactionsPage() {
         yearFilter,
         monthFilter,
         categoryFilter,
-        page,
+        currentPage,
       );
     },
     placeholderData: keepPreviousData,
@@ -98,6 +102,8 @@ export default function TransactionsPage() {
               page={page}
               setPage={setPage}
               isPending={isPending}
+              searchParams={searchParams}
+              setSearchParams={setSearchParams}
             />
           </div>
         </PageWrapper>

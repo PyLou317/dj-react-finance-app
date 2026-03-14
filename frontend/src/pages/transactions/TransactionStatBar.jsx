@@ -7,7 +7,7 @@ export default function TransactionStatBar({ isPending, count, totalSum }) {
         <p className="text-lg">Sum</p>
         <span className="text-3xl font-bold text-gray-900">
           {isPending ? (
-            <Loader />
+            <Loader size={8} />
           ) : (
             `${totalSum >= 0 ? '+' : '-'} $${Math.abs(totalSum).toLocaleString(
               undefined,
@@ -23,7 +23,7 @@ export default function TransactionStatBar({ isPending, count, totalSum }) {
         <p className="text-lg">Count</p>
         <span className="text-3xl font-bold text-gray-900">
           {isPending ? (
-            <Loader />
+            <Loader size={8} />
           ) : (
             count?.toLocaleString(undefined, {
               minimumFractionDigits: 0,
