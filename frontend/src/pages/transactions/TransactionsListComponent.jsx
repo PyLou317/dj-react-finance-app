@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Outlet, useParams } from 'react-router-dom';
 import { useSearchParams } from 'react-router';
@@ -21,6 +21,9 @@ export default function TransactionsPage() {
   const { getToken } = useAuth();
 
   const currentPage = searchParams.get('page') || '1';
+  useEffect(() => {
+    setSearchParams(currentPage);
+  }, [currentPage]);
 
   const {
     isPending,
