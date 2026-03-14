@@ -14,7 +14,7 @@ export const fetchTransactions = async (
   if (year) params.append('year', year);
   if (month) params.append('month', month);
   if (category) params.append('category', category);
-  if (currentPage) params.append('page', page);
+  if (currentPage) params.append('page', currentPage);
 
   const baseUrl = 'api/transactions/';
   const queryString = params.toString() ? `?${params.toString()}` : '';
