@@ -67,8 +67,6 @@ function TransList({
     setSearchTerm(value);
   };
 
-  console.log(transactions);
-
   return (
     <div>
       <div className="flex flex-col justify-between items-center mb-6">
