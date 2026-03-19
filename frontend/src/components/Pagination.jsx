@@ -1,24 +1,23 @@
 export default function Pagination({
   previous,
   next,
-  page,
-  setPage,
   setSearchParams,
+  currentPage,
 }) {
   const handlePageDecrease = () => {
-    const newPage = Number(page) - 1;
-    setPage(newPage);
-    console.log('New Page: ', newPage);
-
-    setSearchParams({ page: newPage });
+    const nextPage = Number(currentPage) - 1;
+    setSearchParams((prev) => {
+      prev.set('page', nextPage);
+      return prev;
+    });
   };
 
   const handlePageIncrease = () => {
-    const newPage = Number(page) + 1;
-    setPage(newPage);
-    console.log('New Page: ', newPage);
-
-    setSearchParams({ page: newPage });
+    const nextPage = Number(currentPage) + 1;
+    setSearchParams((prev) => {
+      prev.set('page', nextPage);
+      return prev;
+    });
   };
 
   return (

@@ -24,8 +24,7 @@ function TransList({
   setYearFilter,
   categoryFilter,
   setCategoryFilter,
-  page,
-  setPage,
+  currentPage,
   isPending,
   setSearchParams,
 }) {
@@ -164,8 +163,7 @@ function TransList({
 
       <div className="flex w-full justify-center items-center">
         <Pagination
-          page={page}
-          setPage={setPage}
+          currentPage={currentPage}
           previous={transactions?.previous}
           next={transactions?.next}
           setSearchParams={setSearchParams}

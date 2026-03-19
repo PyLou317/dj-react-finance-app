@@ -15,17 +15,12 @@ export default function TransactionsPage() {
   const [monthFilter, setMonthFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
-  const [page, setPage] = useState(1);
   const { transactionsId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const { getToken } = useAuth();
 
   const currentPage = searchParams.get('page') || '1';
-  useEffect(() => {
-    setSearchParams(currentPage);
-  }, [currentPage]);
-    
-    console.log('Current Page: ', currentPage)
+  console.log('Current Page: ', currentPage);
 
   const {
     isPending,
@@ -102,8 +97,7 @@ export default function TransactionsPage() {
               setYearFilter={setYearFilter}
               categoryFilter={categoryFilter}
               setCategoryFilter={setCategoryFilter}
-              page={currentPage}
-              setPage={setPage}
+              currentPage={currentPage}
               isPending={isPending}
               searchParams={searchParams}
               setSearchParams={setSearchParams}
