@@ -27,7 +27,6 @@ function TransList({
   page,
   setPage,
   isPending,
-  searchParams,
   setSearchParams,
 }) {
   const [openFilters, setOpenFilters] = useState(false);

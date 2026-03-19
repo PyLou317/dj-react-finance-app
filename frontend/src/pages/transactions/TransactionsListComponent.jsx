@@ -24,6 +24,8 @@ export default function TransactionsPage() {
   useEffect(() => {
     setSearchParams(currentPage);
   }, [currentPage]);
+    
+    console.log('Current Page: ', currentPage)
 
   const {
     isPending,
@@ -52,8 +54,6 @@ export default function TransactionsPage() {
     },
     placeholderData: keepPreviousData,
   });
-
-  console.log(transactions);
 
   const count = transactions?.count ?? 0;
 
@@ -102,7 +102,7 @@ export default function TransactionsPage() {
               setYearFilter={setYearFilter}
               categoryFilter={categoryFilter}
               setCategoryFilter={setCategoryFilter}
-              page={page}
+              page={currentPage}
               setPage={setPage}
               isPending={isPending}
               searchParams={searchParams}
