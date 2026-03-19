@@ -20,7 +20,6 @@ export default function TransactionsPage() {
   const { getToken } = useAuth();
 
   const currentPage = searchParams.get('page') || '1';
-  console.log('Current Page: ', currentPage);
 
   const {
     isPending,
