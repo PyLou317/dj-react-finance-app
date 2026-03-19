@@ -7,12 +7,14 @@ export default function Pagination({
 }) {
   const handlePageDecrease = () => {
     setPage((prev) => prev - 1);
+    console.log('New Page: ', page);
 
     setSearchParams({ page: page });
   };
 
   const handlePageIncrease = () => {
     setPage((prev) => prev + 1);
+    console.log('New Page: ', page);
 
     setSearchParams({ page: page });
   };
