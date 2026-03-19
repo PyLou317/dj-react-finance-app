@@ -84,18 +84,14 @@ def sync_simplefin(days):
                         posted_date = datetime.fromtimestamp(raw_posted).date()
                     else:
                         posted_date = parse_date(str(raw_posted))
-                        
-                    lookup_fields = {
-                        'amount': txn_data['amount'],
-                        'date_posted': posted_date,
-                        'description': txn_data['description'],
-                        'account': account,
-                    }
 
                     obj, created = Transaction.objects.get_or_create(
-                        **lookup_fields,
+                        external_id=txn_data['id'],
                         defaults={
-                            'external_id': txn_data['id'],
+                            'amount': txn_data['amount'],
+                            'date_posted': posted_date,
+                            'description': txn_data['description'],
+                            'account': account,
                             'payee': txn_data['payee'],
                             'is_pending': txn_data.get('pending', False),
                             'extra_data': txn_data.get('extra', {}),
