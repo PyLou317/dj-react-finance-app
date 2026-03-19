@@ -28,7 +28,7 @@ export default function BottomNavbar() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 p-2 sm:p-4 sm:top-0 sm:left-0 sm:w-64 sm:h-screen sm:border-r sm:border-t-0 sm:flex sm:flex-col">
       <h1 className="hidden sm:block text-2xl font-bold text-teal-600 p-4 mb-6">
-        FinanceApp
+        EVERGREEN
       </h1>
 
       <ul className="flex flex-row justify-around sm:flex-col sm:justify-start gap-1 sm:gap-2 list-none">
