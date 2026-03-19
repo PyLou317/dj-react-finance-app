@@ -5,7 +5,7 @@ import { fetchBudgets } from '../../api/budgets';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 
 import TopNavbar from '../../components/navbar/TopNavBar';
-import WelcomeHeader from '../../components/navbar/Header'
+import WelcomeHeader from '../../components/navbar/Header';
 import BudgetCard from './BudgetCard';
 import AccountCardCarousel from './AccountCardCarousel';
 import TransCard from './TransCard';
@@ -70,9 +70,11 @@ export default function DashboardPage() {
         <div className="mx-auto mb-2">
           <AccountCardCarousel />
         </div>
-        <div className="sm:grid sm:grid-cols-2 flex flex-col gap-x-4 gap-y-2 justify-center">
+        <div className="sm:grid sm:grid-cols-2 flex flex-col gap-x-4 gap-y-2 justify-center mb-2">
           <BudgetCard budgets={budgets} categoryTotals={categoryTotals} />
           <CategoryCard categoryTotals={categoryTotals} />
+        </div>
+        <div className="sm:grid sm:grid-cols-1 flex flex-col gap-x-4 gap-y-2 justify-center">
           <TransCard />
           <MonthlyExpenseBarChart
             data={categoryTotals}
