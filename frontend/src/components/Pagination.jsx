@@ -30,7 +30,7 @@ export default function Pagination({
         &lt;
       </button>
       <button className="flex items-center justify-center h-10 w-10 bg-teal-500 text-white rounded-full">
-        {page}
+        {currentPage}
       </button>
       <button
         disabled={next === null}
