@@ -29,8 +29,10 @@ export default function Pagination({
       >
         &lt;
       </button>
+
       {Number(currentPage) > 1 && (
         <button
+          onClick={handlePageDecrease}
           className={`flex items-center justify-center h-10 w-10 bg-white text-black rounded-full border border-gray-300`}
         >
           {Number(currentPage) - 1}
@@ -42,7 +44,10 @@ export default function Pagination({
       </button>
 
       {Number(currentPage) > 1 && (
-        <button className="flex items-center justify-center h-10 w-10 bg-white text-black rounded-full border border-gray-300">
+        <button
+          onClick={handlePageIncrease}
+          className="flex items-center justify-center h-10 w-10 bg-white text-black rounded-full border border-gray-300"
+        >
           {Number(currentPage) > 1 && Number(currentPage) + 1}
         </button>
       )}
