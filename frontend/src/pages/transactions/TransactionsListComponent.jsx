@@ -52,7 +52,8 @@ export default function TransactionsPage() {
   console.log('Transactions: ', transactions);
   console.log(
     'Page Count: ',
-    transactions?.count / Math.ceil(transactions?.results.length),
+    Number(transactions?.count) /
+      Math.ceil(Number(transactions?.results.length)),
   );
 
   const count = transactions?.count ?? 0;
