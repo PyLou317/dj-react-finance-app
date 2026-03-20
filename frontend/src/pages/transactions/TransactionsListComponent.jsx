@@ -49,8 +49,6 @@ export default function TransactionsPage() {
     placeholderData: keepPreviousData,
   });
 
-  console.log('Transactions: ', transactions);
-
   const PAGE_SIZE = 20;
   const pageCount = Math.ceil(Number(transactions?.count) / PAGE_SIZE);
 
