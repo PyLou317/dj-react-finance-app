@@ -103,6 +103,8 @@ export default function TransactionsPage() {
               isPending={isPending}
               searchParams={searchParams}
               setSearchParams={setSearchParams}
+              previous={transactions?.previous}
+              next={transactions?.next}
             />
           </div>
         </PageWrapper>

@@ -27,6 +27,8 @@ function TransList({
   currentPage,
   isPending,
   setSearchParams,
+  previous,
+  next,
 }) {
   const [openFilters, setOpenFilters] = useState(false);
   const { getToken } = useAuth();
@@ -164,8 +166,8 @@ function TransList({
       <div className="flex w-full justify-center items-center">
         <Pagination
           currentPage={currentPage}
-          previous={transactions?.previous}
-          next={transactions?.next}
+          previous={previous}
+          next={next}
           setSearchParams={setSearchParams}
         />
       </div>
