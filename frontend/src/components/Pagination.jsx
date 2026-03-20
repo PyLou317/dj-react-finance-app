@@ -4,6 +4,8 @@ export default function Pagination({
   setSearchParams,
   currentPage,
 }) {
+    console.log('Next:', next)
+    console.log('Previous:', previous)
   const handlePageDecrease = () => {
     const nextPage = Number(currentPage) - 1;
     setSearchParams((prev) => {
