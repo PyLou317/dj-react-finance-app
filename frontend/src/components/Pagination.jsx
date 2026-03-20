@@ -24,6 +24,14 @@ export default function Pagination({
     });
   };
 
+  const handleNavigateToLastPage = () => {
+    const lastPage = pageCount;
+    setSearchParams((prev) => {
+      prev.set('page', lastPage);
+      return prev;
+    });
+  };
+
   return (
     <div className="flex gap-2">
       <button
@@ -58,7 +66,10 @@ export default function Pagination({
 
       {next && <span className="mt-auto text-xl">...</span>}
 
-      <button className="flex items-center justify-center h-10 w-10 bg-white text-black rounded-full border border-gray-300 hover:bg-gray-50 hover:border-gray-400">
+      <button
+        onClick={handleNavigateToLastPage}
+        className="flex items-center justify-center h-10 w-10 bg-white text-black rounded-full border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
+      >
         {pageCount}
       </button>
 
