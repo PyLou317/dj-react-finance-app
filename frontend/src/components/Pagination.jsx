@@ -55,7 +55,7 @@ export default function Pagination({
         {Number(currentPage)}
       </button>
 
-      {next && (
+      {next && Number(currentPage) + 1 < pageCount && (
         <button
           onClick={handlePageIncrease}
           className="flex items-center justify-center h-10 w-10 bg-white text-black rounded-full border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
@@ -66,7 +66,7 @@ export default function Pagination({
 
       {next && <span className="mt-auto text-xl">...</span>}
 
-      {next && (
+      {pageCount > 1 && (
         <button
           onClick={handleNavigateToLastPage}
           className="flex items-center justify-center h-10 w-10 bg-white text-black rounded-full border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
