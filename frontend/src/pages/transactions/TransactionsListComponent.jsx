@@ -49,6 +49,9 @@ export default function TransactionsPage() {
     placeholderData: keepPreviousData,
   });
 
+  console.log('Previous: ', transactions?.previous);
+  console.log('Next: ', transactions?.next);
+
   const count = transactions?.count ?? 0;
 
   const groupedTransactions = useMemo(() => {
