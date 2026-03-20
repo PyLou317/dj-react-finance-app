@@ -50,7 +50,7 @@ export default function TransactionsPage() {
   });
 
   console.log('Transactions: ', transactions);
-//   console.log('Page Count: ', transactions?.count / transactions.length());
+  console.log('Page Count: ', transactions?.count / transactions?.results.length);
 
   const count = transactions?.count ?? 0;
 
