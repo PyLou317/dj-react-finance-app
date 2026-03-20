@@ -53,10 +53,12 @@ export default function TransactionsPage() {
   console.log('Transactions: ', transactions);
 
   useEffect(() => {
-    setPageCount = Math.ceil(
-      Number(transactions?.count) / Number(transactions?.results.length),
+    setPageCount(
+      Math.ceil(
+        Number(transactions?.count) / Number(transactions?.results.length),
+      ),
     );
-  }, [pageCount]);
+  }, [setPageCount]);
 
   const count = transactions?.count ?? 0;
 
