@@ -49,8 +49,7 @@ export default function TransactionsPage() {
     placeholderData: keepPreviousData,
   });
 
-  console.log('main Previous: ', transactions?.previous);
-  console.log('main Next: ', transactions?.next);
+  console.log('Count: ', transactions?.count);
 
   const count = transactions?.count ?? 0;
 
