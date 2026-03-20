@@ -29,6 +29,7 @@ function TransList({
   setSearchParams,
   previous,
   next,
+  pageCount,
 }) {
   const [openFilters, setOpenFilters] = useState(false);
   const { getToken } = useAuth();
@@ -169,6 +170,7 @@ function TransList({
           previous={previous}
           next={next}
           setSearchParams={setSearchParams}
+          pageCount={pageCount}
         />
       </div>
     </div>

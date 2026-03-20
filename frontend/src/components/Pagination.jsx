@@ -3,6 +3,7 @@ export default function Pagination({
   next,
   setSearchParams,
   currentPage,
+  pageCount,
 }) {
   console.log('Next:', next);
   console.log('Previous:', previous);
@@ -58,7 +59,7 @@ export default function Pagination({
       {next && <span className="mt-auto text-xl">...</span>}
 
       <button className="flex items-center justify-center h-10 w-10 bg-white text-black rounded-full border border-gray-300 hover:bg-gray-50 hover:border-gray-400">
-        {10}
+        {pageCount}
       </button>
 
       <button

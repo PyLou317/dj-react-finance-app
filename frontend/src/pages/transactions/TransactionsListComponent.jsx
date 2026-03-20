@@ -17,6 +17,7 @@ export default function TransactionsPage() {
   const [categoryFilter, setCategoryFilter] = useState('');
   const { transactionsId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [pageCount, setPageCount] = useState(0);
   const { getToken } = useAuth();
 
   const currentPage = searchParams.get('page') || '1';
@@ -50,12 +51,12 @@ export default function TransactionsPage() {
   });
 
   console.log('Transactions: ', transactions);
-  console.log(
-    'Page Count: ',
-    Math.ceil(
+
+  useEffect(() => {
+    setPageCount = Math.ceil(
       Number(transactions?.count) / Number(transactions?.results.length),
-    ),
-  );
+    );
+  }, [pageCount]);
 
   const count = transactions?.count ?? 0;
 
@@ -110,6 +111,7 @@ export default function TransactionsPage() {
               setSearchParams={setSearchParams}
               previous={transactions?.previous}
               next={transactions?.next}
+              pageCount={pageCount}
             />
           </div>
         </PageWrapper>
