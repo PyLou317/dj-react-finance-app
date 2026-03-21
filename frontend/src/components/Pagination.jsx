@@ -5,8 +5,6 @@ export default function Pagination({
   currentPage,
   pageCount,
 }) {
-  console.log('Next:', next);
-  console.log('Previous:', previous);
 
   const handlePageDecrease = () => {
     const nextPage = Number(currentPage) - 1;
@@ -60,7 +58,7 @@ export default function Pagination({
           onClick={handlePageIncrease}
           className="flex items-center justify-center h-10 w-10 bg-white text-black rounded-full border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
         >
-          {Number(currentPage) > 1 && Number(currentPage) + 1}
+          {Number(currentPage) >= 1 && Number(currentPage) + 1}
         </button>
       )}
 
