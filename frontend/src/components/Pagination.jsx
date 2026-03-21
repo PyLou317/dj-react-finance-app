@@ -61,7 +61,9 @@ export default function Pagination({
         </button>
       )}
 
-      {next && <span className="mt-auto text-xl">...</span>}
+      {next && currentPage != pageCount - 1 && (
+        <span className="mt-auto text-xl">...</span>
+      )}
 
       {pageCount > 1 && currentPage != pageCount && (
         <button
