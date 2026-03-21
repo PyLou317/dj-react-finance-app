@@ -56,10 +56,10 @@ export default function ConnectAccountPage() {
             onClick={handleSyncTransactions}
           >
             {syncTransMutation.isPending ? (
-              <>
-                <Loader size={4} />
+              <span className='flex justify-center items-center gap-x-2'>
+                <Loader size={3} />
                 <span>Syncing...</span>
-              </>
+              </span>
             ) : (
               <span>Yes</span>
             )}
