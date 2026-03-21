@@ -29,6 +29,13 @@ export default function Pagination({
     });
   };
 
+  const handleNavigateToFirstPage = () => {
+    setSearchParams((prev) => {
+      prev.set('page', 1);
+      return prev;
+    });
+  };
+
   return (
     <div className="flex gap-2">
       <button
@@ -38,6 +45,19 @@ export default function Pagination({
       >
         &lt;
       </button>
+
+      {pageCount > 1 && currentPage > 2 && (
+        <button
+          onClick={handleNavigateToFirstPage}
+          className="flex items-center justify-center h-10 w-10 bg-white text-black rounded-full border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
+        >
+          {1}
+        </button>
+      )}
+
+      {previous && currentPage != pageCount - 1 && currentPage > 2 && (
+        <span className="mt-auto text-xl">...</span>
+      )}
 
       {previous && (
         <button
