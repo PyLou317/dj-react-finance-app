@@ -9,6 +9,8 @@ import {
   fetchCategoryDetails,
 } from '../../api/categories';
 
+import CompanyLogo from '../../components/Logo';
+
 import { capitalize } from '../../utils/capitalizeFirstLetter';
 import MainTitle from '../../components/MainTitle';
 import CategoryRow from '../dashboard/categoryRow';
@@ -46,7 +48,7 @@ export default function CategoriesPage() {
   });
 
   const { isPending: categoryIsPending, data: categoryDetails } = useQuery({
-    queryKey: ['category'],
+    queryKey: ['category', categoryId],
     queryFn: async () => {
       const token = await getToken();
       return fetchCategoryDetails(token, categoryId);
@@ -187,8 +189,47 @@ export default function CategoriesPage() {
                 <NoDataAvailable />
               )}
               {categoryTotals?.length > 0 ? (
-                <div className="mt-4 p-4 border border-gray rounded-xl">
-                  Category Name
+                <div className="mt-4 p-4">
+                  
+                  <div>
+                    {categoryDetails?.transactions.map((trans) => (
+                      <li
+                        key={trans.id}
+                        className="flex flex-row gap-4 p-2 items-center bg-white rounded-xl my-2 hover:scale-102 tooltip"
+                      >
+                        <div className="tooltip-content cursor-pointer truncate max-w-[250px]">
+                          {trans.notes != '' && trans.notes != ' '
+                            ? trans.notes
+                            : 'No notes'}
+                        </div>
+                        <CompanyLogo name={trans.payee} className="w-8 h-8" />
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className="font-semibold truncate text-[14px]">
+                            {trans.payee}
+                          </span>
+                          {trans.category.parent ? (
+                            <span className="text-[14px] text-gray-400 uppercase tracking-wider truncate">
+                              {trans.category?.parent?.name} -{' '}
+                              {trans.category.name}
+                            </span>
+                          ) : (
+                            <span className="text-[14px] text-gray-400 uppercase tracking-wider truncate">
+                              {trans.category?.name}
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          className={`ml-auto font-semibold text-[16px] ${trans.amount >= 0 ? 'text-green-500' : 'text-gray-900'}`}
+                        >
+                          {trans.amount >= 0 ? '+' : '-'}$
+                          {Math.abs(trans.amount).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </span>
+                      </li>
+                    ))}
+                  </div>
                 </div>
               ) : null}
             </div>
