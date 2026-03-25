@@ -68,3 +68,27 @@ class CategorySerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         self.fields['parent'] = CategorySerializer(read_only=True)
         return super().to_representation(instance)
+
+
+class CategoryDetailSerializer(serializers.ModelSerializer):
+    parent = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(), 
+        allow_null=True, 
+        required=False
+    )
+    category_sum = serializers.DecimalField(
+        max_digits=19, 
+        decimal_places=2, 
+        read_only=True
+    )
+    
+    transactions = TransactionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'color', 'icon', 'parent', 'category_sum', 'transactions']
+        depth = 2
+        
+    def to_representation(self, instance):
+        self.fields['parent'] = CategoryDetailSerializer(read_only=True)
+        return super().to_representation(instance)
