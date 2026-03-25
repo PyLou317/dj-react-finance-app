@@ -4,7 +4,7 @@ from django.db.models import Sum, Q, Value, DecimalField
 
 from .tasks import sync_simplefin
 from .models import Organization, Account, Transaction, Budget, Category
-from .serializers import OrganizationSerializer, AccountSerializer, TransactionSerializer, TransactionWriteSerializer, BudgetSerializer, CategorySerializer
+from .serializers import OrganizationSerializer, AccountSerializer, TransactionSerializer, TransactionWriteSerializer, BudgetSerializer, CategorySerializer, CategoryDetailSerializer
 
 from rest_framework import filters, generics
 from rest_framework.response import Response
@@ -164,14 +164,23 @@ class CategoryListView(generics.ListCreateAPIView):
     
 class CategoryDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
-    
-    # def get_serializer_class(self):
-    #     if self.request.method in ['PUT', 'PATCH']:
-    #         return CategorySerializer
-    #     return TransactionSerializer
+    serializer_class = CategoryDetailSerializer
     
     def get_queryset(self):
-        return Category.objects.filter(transactions__account__user=self.request.user)
+        user = self.request.user
+
+        return Category.objects.filter(
+            transactions__account__user=user
+        ).annotate(
+            category_sum=Coalesce(
+                Sum(
+                    'transactions__amount',
+                    filter=Q(transactions__account__user=user)
+                ),
+                Value(0),
+                output_field=DecimalField()
+            )
+        ).distinct()
 
 
 class CategoryTotalsView(APIView):
