@@ -3,6 +3,7 @@ import { useAuth } from '@clerk/clerk-react';
 
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchCategories } from '../../api/categories';
+import { fetchTransactionYearList } from '@/api/transactions';
 
 import CompanyLogo from '../../components/Logo';
 import { Link } from 'react-router-dom';
@@ -14,18 +15,14 @@ import FilterComponent from './FilterComponent';
 import Pagination from '../../components/Pagination';
 import SearchBar from '../../components/searchbar/SearchBar';
 import NoDataAvailable from '../dashboard/NoDataAvailable';
+import { fetchAccounts, fetchInstitutions } from '@/api/accounts';
 
 function TransList({
   transactions,
   setSearchTerm,
-  monthFilter,
-  setMonthFilter,
-  yearFilter,
-  setYearFilter,
-  categoryFilter,
-  setCategoryFilter,
   currentPage,
   isPending,
+  searchParams,
   setSearchParams,
   previous,
   next,
@@ -47,24 +44,44 @@ function TransList({
     placeholderData: keepPreviousData,
   });
 
-  const today = new Date();
-  const year = today.getFullYear();
+  const {
+    data: yearsData,
+    isPending: yearsIsPending,
+    error: yearsError,
+  } = useQuery({
+    queryKey: ['years'],
+    queryFn: async () => {
+      const token = await getToken();
+      return fetchTransactionYearList(token);
+    },
+    placeholderData: keepPreviousData,
+  });
 
-  const years = [];
-  for (let i = year - 2; i <= year; i++) {
-    years.push(i);
-  }
-  years.reverse();
+  const {
+    data: accountsData,
+    isPending: accountsIsPending,
+    error: accountsError,
+  } = useQuery({
+    queryKey: ['accounts'],
+    queryFn: async () => {
+      const token = await getToken();
+      return fetchAccounts(token);
+    },
+    placeholderData: keepPreviousData,
+  });
 
-  function handleYearChange(e) {
-    setYearFilter(e.target.value);
-  }
-
-  function clearFilters() {
-    setYearFilter('');
-    setMonthFilter('');
-    setCategoryFilter('');
-  }
+  const {
+    data: orgData,
+    isPending: orgIsPending,
+    error: orgError,
+  } = useQuery({
+    queryKey: ['organizations'],
+    queryFn: async () => {
+      const token = await getToken();
+      return fetchInstitutions(token);
+    },
+    placeholderData: keepPreviousData,
+  });
 
   const handleSearch = (value) => {
     setSearchTerm(value);
@@ -73,29 +90,26 @@ function TransList({
   return (
     <div>
       <div className="flex flex-col justify-between items-center mb-6">
-        <div className="mb-6 w-full">
-          <SearchBar onSearch={handleSearch} />
-        </div>
         <FilterComponent
           openFilters={openFilters}
-          clearFilters={clearFilters}
           setOpenFilters={setOpenFilters}
         />
       </div>
 
       {openFilters ? (
         <FilterDropDown
-          handleYearChange={handleYearChange}
-          yearFilter={yearFilter}
-          setYearFilter={setYearFilter}
-          years={years}
-          setMonthFilter={setMonthFilter}
-          monthFilter={monthFilter}
-          setCategoryFilter={setCategoryFilter}
-          categoryFilter={categoryFilter}
+          years={yearsData}
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
           categoryData={categoryData}
+          accountsData={accountsData}
+          orgData={orgData}
         />
       ) : null}
+
+      <div className="my-6 w-full">
+        <SearchBar onSearch={handleSearch} />
+      </div>
 
       {isPending ? (
         <div className="flex justify-center p-10">
