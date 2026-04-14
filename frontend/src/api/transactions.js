@@ -1,19 +1,25 @@
+import axios from 'axios';
+
 const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/';
 
 export const fetchTransactions = async (
   token,
   searchTerm = '',
-  year = '',
-  month = '',
-  category = '',
+  currentYear = '',
+  currentMonth = '',
+  currentCategory = '',
+  currentBank = '',
+  currentAccount = '',
   currentPage,
 ) => {
   const params = new URLSearchParams();
 
   if (searchTerm) params.append('search', searchTerm);
-  if (year) params.append('year', year);
-  if (month) params.append('month', month);
-  if (category) params.append('category', category);
+  if (currentYear) params.append('year', currentYear);
+  if (currentMonth) params.append('month', currentMonth);
+  if (currentCategory) params.append('category', currentCategory);
+  if (currentBank) params.append(currentBank);
+  if (currentAccount) params.append('account', currentAccount);
   if (currentPage) params.append('page', currentPage);
 
   const baseUrl = 'api/transactions/';
