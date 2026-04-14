@@ -86,36 +86,34 @@ export default function MonthlyExpenseBarChart({
   return (
     <Card>
       <CardTitle name="Monthly Expense Chart" />
-      {!hasData ? null : (
-        <div className="flex flex-row justify-end gap-2">
-          <select
-            name="month"
-            id="month"
-            className="border rounded-md p-1"
-            onChange={handleMonthFilter}
-            value={monthFilter.toLowerCase()}
-          >
-            {months.map((month) => (
-              <option key={month} value={month.toLowerCase()}>
-                {month}
-              </option>
-            ))}
-          </select>
-          <select
-            name="year"
-            id="year"
-            className="border rounded-md p-1"
-            onChange={handleYearFilter}
-            value={yearFilter}
-          >
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+      <div className="flex flex-row justify-end gap-2">
+        <select
+          name="month"
+          id="month"
+          className="border rounded-md p-1"
+          onChange={handleMonthFilter}
+          value={monthFilter.toLowerCase()}
+        >
+          {months.map((month) => (
+            <option key={month} value={month.toLowerCase()}>
+              {month}
+            </option>
+          ))}
+        </select>
+        <select
+          name="year"
+          id="year"
+          className="border rounded-md p-1"
+          onChange={handleYearFilter}
+          value={yearFilter}
+        >
+          {years.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+      </div>
       {!hasData ? (
         <NoDataAvailable />
       ) : (
