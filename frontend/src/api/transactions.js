@@ -75,6 +75,28 @@ export const fetchTransactionDetails = async (token, Id) => {
   }
 };
 
+export const fetchTransactionYearList = async (token) => {
+  try {
+    const response = await fetch(`${apiUrl}api/transaction-year-list/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch transaction year list: ${response.statusText}`,
+      );
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Network or Server Error:', error);
+    throw error;
+  }
+};
+
 export const syncTransactions = async (token) => {
   try {
     const response = await fetch(`${apiUrl}api/sync-transactions/`, {
