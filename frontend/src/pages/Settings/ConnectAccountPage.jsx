@@ -18,6 +18,7 @@ export default function ConnectAccountPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      setIsOpen(false);
     },
     onError: (error) => {
       console.error('Error syncing transactions:', error);
@@ -56,7 +57,7 @@ export default function ConnectAccountPage() {
             onClick={handleSyncTransactions}
           >
             {syncTransMutation.isPending ? (
-              <span className='flex justify-center items-center gap-x-2'>
+              <span className="flex justify-center items-center gap-x-2">
                 <Loader size={3} />
                 <span>Syncing...</span>
               </span>
