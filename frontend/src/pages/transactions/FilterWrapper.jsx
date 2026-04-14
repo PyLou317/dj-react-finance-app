@@ -2,6 +2,7 @@ import { X } from 'lucide-react';
 
 export default function FilterWrapper({
   name,
+  id,
   selectOnChange,
   selectValue,
   children,
@@ -11,7 +12,7 @@ export default function FilterWrapper({
     <div className="flex flex-row items-center gap-1">
       <select
         name={name}
-        id={name}
+        id={id}
         className="py-1 w-full"
         onChange={selectOnChange}
         value={selectValue}
@@ -19,7 +20,11 @@ export default function FilterWrapper({
         {children}
       </select>
       {selectValue ? (
-        <button type="button" onClick={cancel} className="cursor-pointer p-2 rounded-lg hover:bg-gray-100/50">
+        <button
+          type="button"
+          onClick={cancel}
+          className="cursor-pointer p-2 rounded-lg hover:bg-gray-100/50"
+        >
           <X size={15} />
         </button>
       ) : null}
