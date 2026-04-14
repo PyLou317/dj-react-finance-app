@@ -234,7 +234,12 @@ class CategoryTotalsView(APIView):
         
         serializer = CategorySerializer(queryset, many=True)
         return Response(serializer.data)
-    
+
+class TransactionYearsView(APIView):
+    def get(self, request):
+        years = Transaction.objects.dates('date_posted', 'year', order='DESC')
+        year_list = [year.year for year in years]
+        return Response(year_list)
     
 class SyncTransactions(APIView):
     def post(self, request):
