@@ -2,7 +2,6 @@ import FilterBtn from './FilterBtn';
 
 export default function FilterComponent({
   openFilters,
-  clearFilters,
   setOpenFilters,
 }) {
   return (
@@ -12,15 +11,6 @@ export default function FilterComponent({
         onClick={() => setOpenFilters(!openFilters)}
         isOpen={openFilters}
       />
-
-      {/* {openFilters ? (
-        <button
-          className="text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors cursor-pointer"
-          onClick={clearFilters}
-        >
-          Clear all
-        </button>
-      ) : null} */}
     </div>
   );
 }
