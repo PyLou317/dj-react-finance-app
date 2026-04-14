@@ -251,4 +251,38 @@ class SyncTransactions(APIView):
             {"status": "Syncing transactions triggered"}, 
             status=status.HTTP_202_ACCEPTED
         )
+
+
+class UplaodTransactionFile(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request):
+        
+        logger.info("File upload started...")
+        
+        uploaded_file = request.FILES.get('file')
+        account_id = request.data.get('account_id')
+        
+        if not uploaded_file:
+            return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            result_message = processUploadedFile(
+                file=uploaded_file, 
+                account_id=account_id, 
+                user=request.user
+            )
+
+            logger.info(f"File upload finished: {result_message}")
+            return Response(
+                {"status": "success", "message": result_message}, 
+                status=status.HTTP_201_CREATED
+            )
+            
+        except Exception as e:
+            logger.error(f"Upload failed: {str(e)}")
+            return Response(
+                {"error": str(e)}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
