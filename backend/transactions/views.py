@@ -69,12 +69,14 @@ class ListTransactionView(generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['account_id', 'category_id']
-    search_fields = ['account__name', 'description', 'payee', 'category__name']
+    search_fields = ['account__name', 'description', 'payee', 'category__name', 'account__org__name']
     
     def get_queryset(self):
         month_raw = self.request.query_params.get('month')
         year = self.request.query_params.get('year')
         category = self.request.query_params.get('category')
+        org = self.request.query_params.get('org')
+        account = self.request.query_params.get('account')
         
         queryset = Transaction.objects.filter(account__user=self.request.user)
         
@@ -95,6 +97,12 @@ class ListTransactionView(generics.ListAPIView):
         
         if category:
             queryset = queryset.filter(category=category)
+        
+        if org:
+            queryset = queryset.filter(account__org=org)
+        
+        if account:
+            queryset = queryset.filter(account=account)
         
         return queryset
         
