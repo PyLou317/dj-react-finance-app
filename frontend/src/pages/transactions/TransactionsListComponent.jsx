@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
-import { Outlet, useParams } from 'react-router-dom';
-import { useSearchParams } from 'react-router';
+import { Outlet, useParams, useSearchParams } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchTransactions } from '../../api/transactions';
 
@@ -12,14 +12,16 @@ import TransactionStatBar from './TransactionStatBar';
 
 export default function TransactionsPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [monthFilter, setMonthFilter] = useState('');
-  const [yearFilter, setYearFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
   const { transactionsId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const { getToken } = useAuth();
 
   const currentPage = searchParams.get('page') || '1';
+  const currentMonth = searchParams.get('month') || '';
+  const currentYear = searchParams.get('year') || '';
+  const currentCategory = searchParams.get('category') || '';
+  const currentOrg = searchParams.get('org') || '';
+  const currentAccount = searchParams.get('account') || '';
 
   const {
     isPending,
@@ -30,9 +32,11 @@ export default function TransactionsPage() {
     queryKey: [
       'transactions',
       searchTerm,
-      yearFilter,
-      monthFilter,
-      categoryFilter,
+      currentYear,
+      currentMonth,
+      currentCategory,
+      currentOrg,
+      currentAccount,
       currentPage,
     ],
     queryFn: async () => {
@@ -40,9 +44,11 @@ export default function TransactionsPage() {
       return fetchTransactions(
         token,
         searchTerm,
-        yearFilter,
-        monthFilter,
-        categoryFilter,
+        currentYear,
+        currentMonth,
+        currentCategory,
+        currentOrg,
+        currentAccount,
         currentPage,
       );
     },
@@ -76,8 +82,13 @@ export default function TransactionsPage() {
       ) : (
         <PageWrapper>
           {/* Page Header Area */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div className="flex flex-row sm:items-center justify-between gap-4 mb-6">
             <MainTitle name="Transactions" />
+            <NavLink to="/upload">
+              <button className="font-semibold py-2 px-4 bg-teal-500 text-white rounded-xl cursor-pointer hover:bg-teal-400">
+                Upload
+              </button>
+            </NavLink>
           </div>
 
           <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-2">
@@ -93,12 +104,6 @@ export default function TransactionsPage() {
               transactions={groupedTransactions}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
-              monthFilter={monthFilter}
-              setMonthFilter={setMonthFilter}
-              yearFilter={yearFilter}
-              setYearFilter={setYearFilter}
-              categoryFilter={categoryFilter}
-              setCategoryFilter={setCategoryFilter}
               currentPage={currentPage}
               isPending={isPending}
               searchParams={searchParams}
