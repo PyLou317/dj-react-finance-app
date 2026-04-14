@@ -2,17 +2,14 @@ import FilterWrapper from './FilterWrapper';
 import { capitalize } from '../../utils/capitalizeFirstLetter';
 
 export default function FilterDropDown({
-  handleYearChange,
-  yearFilter,
-  setYearFilter,
-  years,
-  setMonthFilter,
-  monthFilter,
-  setCategoryFilter,
-  categoryFilter,
-  categoryData,
+  searchParams,
+  setSearchParams,
   openFilters,
   clearFilters,
+  years,
+  categoryData,
+  accountsData,
+  orgData,
 }) {
   const months = [
     'January',
@@ -47,10 +44,22 @@ export default function FilterDropDown({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <FilterWrapper
-            name="year"
-            selectOnChange={handleYearChange}
-            selectValue={yearFilter}
-            cancel={() => setYearFilter('')}
+            name="select-year"
+            id="select-year"
+            selectOnChange={(e) => {
+              const selectedValue = e.target.value;
+              setSearchParams({
+                ...Object.fromEntries(searchParams),
+                year: selectedValue,
+              });
+            }}
+            selectValue={searchParams.get('year') || ''}
+            cancel={(e) => {
+              if (e) e.preventDefault();
+              const params = Object.fromEntries(searchParams);
+              delete params.year;
+              setSearchParams(params);
+            }}
           >
             <option value="">All Years</option>
             {years.map((year) => (
@@ -61,10 +70,21 @@ export default function FilterDropDown({
           </FilterWrapper>
 
           <FilterWrapper
-            name="month"
-            selectOnChange={(e) => setMonthFilter(e.target.value)}
-            selectValue={monthFilter}
-            cancel={() => setMonthFilter('')}
+            name="select-month"
+            id="select-month"
+            selectOnChange={(e) =>
+              setSearchParams({
+                ...Object.fromEntries(searchParams),
+                month: e.target.value,
+              })
+            }
+            selectValue={searchParams.get('month') || ''}
+            cancel={(e) => {
+              if (e) e.preventDefault();
+              const params = Object.fromEntries(searchParams);
+              delete params.month;
+              setSearchParams(params);
+            }}
           >
             <option value="">All Months</option>
             {months.map((month) => (
@@ -75,10 +95,21 @@ export default function FilterDropDown({
           </FilterWrapper>
 
           <FilterWrapper
-            name="category"
-            selectOnChange={(e) => setCategoryFilter(e.target.value)}
-            selectValue={categoryFilter}
-            cancel={() => setCategoryFilter('')}
+            name="select-category"
+            id="select-category"
+            selectOnChange={(e) =>
+              setSearchParams({
+                ...Object.fromEntries(searchParams),
+                category: e.target.value,
+              })
+            }
+            selectValue={searchParams.get('category') || ''}
+            cancel={(e) => {
+              if (e) e.preventDefault();
+              const params = Object.fromEntries(searchParams);
+              delete params.category;
+              setSearchParams(params);
+            }}
           >
             <option value="">All Categories</option>
             {categoryData?.map((cat) => (
@@ -86,6 +117,56 @@ export default function FilterDropDown({
                 {cat?.parent
                   ? `${cat.parent.name}: ${capitalize(cat.name)}`
                   : cat.name}
+              </option>
+            ))}
+          </FilterWrapper>
+
+          <FilterWrapper
+            name="select-org"
+            id="select-org"
+            selectOnChange={(e) =>
+              setSearchParams({
+                ...Object.fromEntries(searchParams),
+                org: e.target.value,
+              })
+            }
+            selectValue={searchParams.get('org') || ''}
+            cancel={(e) => {
+              if (e) e.preventDefault();
+              const params = Object.fromEntries(searchParams);
+              delete params.org;
+              setSearchParams(params);
+            }}
+          >
+            <option value="">All Banks</option>
+            {orgData?.map((org) => (
+              <option key={org?.id} value={org?.id}>
+                {org?.name}
+              </option>
+            ))}
+          </FilterWrapper>
+
+          <FilterWrapper
+            name="select-account"
+            id="select-account"
+            selectOnChange={(e) =>
+              setSearchParams({
+                ...Object.fromEntries(searchParams),
+                account: e.target.value,
+              })
+            }
+            selectValue={searchParams.get('account') || ''}
+            cancel={(e) => {
+              if (e) e.preventDefault();
+              const params = Object.fromEntries(searchParams);
+              delete params.account;
+              setSearchParams(params);
+            }}
+          >
+            <option value="">All Accounts</option>
+            {accountsData?.map((account) => (
+              <option key={account.id} value={account?.id}>
+                {account.name}
               </option>
             ))}
           </FilterWrapper>
