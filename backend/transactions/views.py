@@ -55,6 +55,14 @@ class ListAccountView(APIView):
         serializer = AccountSerializer(accounts, many=True)
         return Response(serializer.data)
 
+class ListAccountViewByOrg(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, pk=None, format=None):
+        accounts = Account.objects.filter(org=pk)
+        serializer = AccountSerializer(accounts, many=True)
+        return Response(serializer.data)
+
 class ListTransactionView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TransactionSerializer
