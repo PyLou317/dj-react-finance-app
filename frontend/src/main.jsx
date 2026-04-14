@@ -16,6 +16,7 @@ import CategoriesPage from './pages/categories/CategoriesPage.jsx';
 import SettingsPage from './pages/Settings/SettingsPage.jsx';
 import ConnectAccountPage from './pages/Settings/ConnectAccountPage.jsx';
 import ProfilePage from './pages/Settings/ProfilePage.jsx';
+import UploadPage from './pages/upload/UploadPage.jsx';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -40,6 +41,7 @@ createRoot(document.getElementById('root')).render(
                 />
               </Route>
               <Route path="categories" element={<CategoriesPage />} />
+              <Route path="upload" element={<UploadPage />} />
               <Route path="settings" element={<SettingsPage />}>
                 <Route index element={<Navigate to="profile" replace />} />
                 <Route path="profile" element={<ProfilePage />} />
