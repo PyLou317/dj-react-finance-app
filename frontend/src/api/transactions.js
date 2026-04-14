@@ -177,3 +177,37 @@ export const updateTransactionNotes = async (token, payload) => {
     throw error;
   }
 };
+
+export const uploadTransactionFile = async (
+  token,
+  file,
+  account_id,
+  onProgress,
+) => {
+  const url = `${apiUrl}api/upload/`;
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('account_id', account_id);
+
+  try {
+    const response = await axios.post(url, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      onUploadProgress: (progressEvent) => {
+        if (onProgress && progressEvent.total) {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total,
+          );
+          onProgress(percentCompleted);
+        }
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Upload Error:', error.response?.data || error.message);
+    throw error;
+  }
+};
