@@ -5,6 +5,7 @@ urlpatterns = [
     # Standard
     path('organizations/', ListOrganizationView.as_view(), name='organizations'),
     path('accounts/', ListAccountView.as_view(), name='accounts'),
+    path('filtered-accounts/<int:pk>/', ListAccountViewByOrg.as_view(), name='filtered-accounts'),
     path('transactions/', ListTransactionView.as_view(), name='transactions'),
     path('sync-transactions/', SyncTransactions.as_view(), name='sync-transactions'),
     path('transactions/<int:pk>/', TransactionDetailView.as_view(), name='transaction-detail'),
@@ -13,6 +14,8 @@ urlpatterns = [
     path('categories/', CategoryListView.as_view(), name='categories'),
     path('category/<int:pk>/', CategoryDetailView.as_view(), name='category-detail'),
     path('category-totals/', CategoryTotalsView.as_view(), name='category-totals'),
+    path('upload/', UplaodTransactionFile.as_view(), name='upload'),
+    path('transaction-year-list/', TransactionYearsView.as_view(), name='transaction-year-list'),
     
     # SimpleFIN
     path('trigger-sf-long-sync/', TriggerLongSFSync.as_view(), name='trigger_longsf_sync'),
