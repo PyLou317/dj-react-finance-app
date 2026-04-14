@@ -1,5 +1,5 @@
 import { useAuth } from '@clerk/clerk-react';
-import fetchAccounts from '../../api/accounts';
+import { fetchAccounts } from '@/api/accounts';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import AccountCard from './AccountCard';
 import Title from './CardTItle';
@@ -30,7 +30,7 @@ export default function AccountCardCarousel() {
   return (
     <>
       <Title name="My Accounts" />
-      <div className="flex flex-row bg-teal-100 p-5 rounded-2xl w-full gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory z-10">
+      <div className="flex flex-row py-5 rounded-2xl w-full gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory z-10">
         {isPending || isFetching
           ? skeletonCards.map((i) => <SkeletonAccountCard key={i} />)
           : sortedAccounts && sortedAccounts.length > 0
