@@ -32,12 +32,26 @@ export default function CategoryDonutChart({ categories }) {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        display: true,
+        position: 'bottom',
+        labels: {
+          padding: 20,
+          usePointStyle: true,
+          boxWidth: 10,
+          boxHeight: 10,
+          font: {
+            size: 12,
+          },
+        },
       },
     },
   };
-  return <Doughnut data={chartData} options={options} />;
+  return (
+    <div className="w-full md:w-1/2 mx-auto relative aspect-square max-h-[500px]">
+      <Doughnut data={chartData} options={options} />
+    </div>
+  );
 }
