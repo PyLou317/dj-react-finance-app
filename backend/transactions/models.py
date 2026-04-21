@@ -63,8 +63,8 @@ class Account(models.Model):
     '''
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     
-    # Map to transaction id
-    external_id = models.CharField(max_length=255, unique=True)
+    # Map to SimpleFIN account id
+    external_id = models.CharField(max_length=255)
     org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='accounts')
     name = models.CharField(max_length=255)
     currency = models.CharField(max_length=10, default="CAD")
@@ -74,6 +74,7 @@ class Account(models.Model):
     extra = models.JSONField(default=dict, blank=True)
     
     class Meta:
+        unique_together = ('external_id', 'user')
         ordering = ['name']
     
 
@@ -112,7 +113,7 @@ class Transaction(models.Model):
     "category": "food"
     '''
     # Map to "id"
-    external_id = models.CharField(max_length=255, unique=True) 
+    external_id = models.CharField(max_length=255) 
     account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='transactions')
     amount = models.DecimalField(max_digits=19, decimal_places=2)
     date_posted = models.DateField()
@@ -120,7 +121,7 @@ class Transaction(models.Model):
     description = models.TextField()
     is_pending = models.BooleanField(default=False)
     extra_data = models.JSONField(default=dict, blank=True)
-    notes = models.TextField()
+    notes = models.TextField(blank=True)
     category = models.ForeignKey(
         Category, 
         on_delete=models.SET_NULL, 
@@ -135,6 +136,7 @@ class Transaction(models.Model):
         return result['total'] or 0
     
     class Meta:
+        unique_together = ('external_id', 'account')
         ordering = ['-date_posted']
         
     def __str__(self):
