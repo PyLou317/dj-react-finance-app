@@ -26,6 +26,12 @@ export default function FilterDropDown({
     'December',
   ];
 
+  const filteredCategoryData = categoryData?.filter((cat) => {
+    return cat.parent != null;
+  });
+
+  //   console.log(filteredCategoryData);
+
   return (
     <div className="mb-6">
       <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
@@ -112,7 +118,7 @@ export default function FilterDropDown({
             }}
           >
             <option value="">All Categories</option>
-            {categoryData?.map((cat) => (
+            {filteredCategoryData?.map((cat) => (
               <option key={cat.id} value={cat?.id}>
                 {cat?.parent
                   ? `${cat.parent.name}: ${capitalize(cat.name)}`
