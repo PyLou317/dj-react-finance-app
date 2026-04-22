@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useAuth } from '@clerk/clerk-react';
-import { Outlet, useParams } from 'react-router';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import {
   fetchCategoryTotals,
@@ -11,6 +11,7 @@ import {
 
 import CompanyLogo from '../../components/Logo';
 
+import Loader from '../../components/Loader';
 import { capitalize } from '../../utils/capitalizeFirstLetter';
 import MainTitle from '../../components/MainTitle';
 import CategoryRow from '../dashboard/categoryRow';
@@ -23,7 +24,7 @@ import NoDataAvailable from '../dashboard/NoDataAvailable';
 export default function CategoriesPage() {
   const [monthFilter, setMonthFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
-  const [categoryId, setCategoryId] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const { getToken } = useAuth();
 
@@ -47,16 +48,17 @@ export default function CategoriesPage() {
     placeholderData: keepPreviousData,
   });
 
+  const categoryId = searchParams.get('category');
+
   const { isPending: categoryIsPending, data: categoryDetails } = useQuery({
     queryKey: ['category', categoryId],
     queryFn: async () => {
       const token = await getToken();
       return fetchCategoryDetails(token, categoryId);
     },
+    enabled: !!categoryId,
     placeholderData: keepPreviousData,
   });
-
-  console.log('Category: ', categoryDetails);
 
   const categoryParents = categories?.filter((cat) => !cat?.parent);
 
@@ -86,9 +88,36 @@ export default function CategoriesPage() {
 
   const handleCategorySelect = (e) => {
     const id = e.target.value;
-    setCategoryId(id);
-    console.log('Selected ID:', id);
+    setSearchParams((prev) => {
+      prev.set('category', id);
+      prev.delete('page');
+      return prev;
+    });
   };
+
+  const selectedCategorySum = useMemo(() => {
+    if (!categoryId || !categoryTotals) return 0;
+    const found = categoryTotals.find(
+      (c) => String(c.id) === String(categoryId),
+    );
+    return found ? found.category_sum : 0;
+  }, [categoryId, categoryTotals]);
+
+  const transactionData = categoryDetails?.transactions;
+  const groupedTransactions = useMemo(() => {
+    const txns = Array.isArray(transactionData)
+      ? transactionData
+      : transactionData?.results || [];
+
+    return txns.reduce((groups, trans) => {
+      const date = trans.date_posted;
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(trans);
+      return groups;
+    }, {});
+  }, [transactionData]);
 
   return (
     <div className="mb-10">
@@ -132,7 +161,6 @@ export default function CategoriesPage() {
                 selectOnChange={(e) => setMonthFilter(e.target.value)}
                 selectValue={monthFilter}
                 cancel={() => setMonthFilter('')}
-                value={monthFilter.toLowerCase()}
               >
                 <option value="">All Months</option>
                 {months.map((month) => (
@@ -143,22 +171,30 @@ export default function CategoriesPage() {
               </FilterWrapper>
             </div>
           ) : null}
-          <div className="grid grid-cols-2">
-            <div>
-              {categoryTotals?.length > 0 ? (
-                <CategoryDonutChart categories={categoryTotals} />
-              ) : (
-                <NoDataAvailable />
-              )}
-            </div>
-            <div></div>
+          <div className="flex justify-center w-full">
+            {categoryTotals?.length > 0 ? (
+              <CategoryDonutChart categories={categoryTotals} />
+            ) : (
+              <NoDataAvailable />
+            )}
           </div>
         </div>
 
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">
-            Category Transactions
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Category Transactions
+            </h2>
+            {categoryId && (
+              <span className="text-lg font-bold text-gray-900">
+                Total Spent: $
+                {Math.abs(selectedCategorySum).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+            )}
+          </div>
           <div>
             <div>
               <span className="font-semibold">Select Category:</span>
@@ -173,8 +209,8 @@ export default function CategoriesPage() {
                   name="category"
                   id="categoryDropDown"
                   defaultValue="placeholder"
-                  value={categoryId}
-                  className="w-full p-2 border-2 border-teal-500 rounded-lg"
+                  value={categoryId || 'placeholder'}
+                  className="w-full p-2 border-2 border-teal-500 rounded-lg mb-6"
                   onChange={handleCategorySelect}
                 >
                   <option disabled={true} value="placeholder">
@@ -195,60 +231,78 @@ export default function CategoriesPage() {
               )}
             </div>
           </div>
-          {categoryDetails != undefined ? (
-            <div className="mt-4 p-4">
-              <div>
-                {categoryDetails?.transactions.map((trans) => (
-                  <li
-                    key={trans.id}
-                    className="flex flex-row gap-4 p-2 items-center bg-white rounded-xl my-2 hover:scale-102 tooltip"
-                  >
-                    <div className="tooltip-content cursor-pointer truncate max-w-[250px]">
-                      {trans.notes != '' && trans.notes != ' '
-                        ? trans.notes
-                        : 'No notes'}
-                    </div>
-                    <CompanyLogo name={trans.payee} className="w-8 h-8" />
-                    <div className="flex flex-col min-w-0 flex-1">
-                      <span className="font-semibold truncate text-[14px]">
-                        {trans.payee}
-                      </span>
-                      {trans.category.parent ? (
-                        <span className="text-[14px] text-gray-400 uppercase tracking-wider truncate">
-                          {trans.category?.parent?.name} - {trans.category.name}
-                        </span>
-                      ) : (
-                        <span className="text-[14px] text-gray-400 uppercase tracking-wider truncate">
-                          {trans.category?.name}
-                        </span>
-                      )}
-                    </div>
-                    <span
-                      className={`ml-auto font-semibold text-[16px] ${trans.amount >= 0 ? 'text-green-500' : 'text-gray-900'}`}
-                    >
-                      {trans.amount >= 0 ? '+' : '-'}$
-                      {Math.abs(trans.amount).toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </span>
-                  </li>
-                ))}
-              </div>
+
+          {!categoryId ? (
+            <div className="text-center py-10 text-gray-500">
+              Please select a category to view transactions.
+            </div>
+          ) : categoryIsPending ? (
+            <div className="flex justify-center p-10">
+              <Loader size={10} />
+            </div>
+          ) : Object.keys(groupedTransactions).length === 0 ? (
+            <div className="pt-2 pb-8">
+              <NoDataAvailable />
             </div>
           ) : (
-            <div className="text-center py-10">
-              <span>Please select a category to view data</span>
-            </div>
+            Object.keys(groupedTransactions).map((date) => (
+              <div key={date} className="mb-6">
+                <h3 className="py-1 text-xs font-bold text-gray-500 uppercase sticky top-0">
+                  {new Date(date).toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                </h3>
+                <ul>
+                  {groupedTransactions[date].map((trans) => (
+                    <Link to={`/transaction-list/${trans.id}`} key={trans.id}>
+                      <li className="flex flex-row gap-4 p-2 items-center bg-white rounded-xl my-2 hover:scale-102 tooltip">
+                        <div className="tooltip-content cursor-pointer truncate max-w-[250px]">
+                          {trans.notes != '' && trans.notes != ' '
+                            ? trans.notes
+                            : 'No notes'}
+                        </div>
+                        <CompanyLogo name={trans.payee} className="w-8 h-8" />
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className="font-semibold truncate text-[14px]">
+                            {trans.payee}
+                          </span>
+                          {trans.category.parent ? (
+                            <span className="text-[14px] text-gray-400 uppercase tracking-wider truncate">
+                              {trans.category?.parent?.name} -{' '}
+                              {trans.category.name}
+                            </span>
+                          ) : (
+                            <span className="text-[14px] text-gray-400 uppercase tracking-wider truncate">
+                              {trans.category?.name}
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          className={`ml-auto font-semibold text-[16px] ${trans.amount >= 0 ? 'text-green-500' : 'text-gray-900'}`}
+                        >
+                          {trans.amount >= 0 ? '+' : '-'}$
+                          {Math.abs(trans.amount).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </span>
+                      </li>
+                    </Link>
+                  ))}
+                </ul>
+              </div>
+            ))
           )}
         </div>
-      </div>
 
-      <AddCategoryModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        categoryParents={categoryParents}
-      />
+        <AddCategoryModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          categoryParents={categoryParents}
+        />
+      </div>
     </div>
   );
 }
