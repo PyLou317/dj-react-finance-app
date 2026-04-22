@@ -10,10 +10,12 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 
 class AccountSerializer(serializers.ModelSerializer):
+    org = serializers.SerializerMethodField()
     class Meta:
         model = Account
         fields = '__all__'
-        depth = 2
+    def get_org(self, obj):
+        return {'id': obj.org.id, 'name': obj.org.name, 'domain': obj.org.domain, 'sfin-url': obj.org.external_id}
 
 
 class TransactionSerializer(serializers.ModelSerializer):

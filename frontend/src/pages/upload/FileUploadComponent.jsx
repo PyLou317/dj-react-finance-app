@@ -29,10 +29,14 @@ const FileUploadProgressBar = forwardRef(
           },
         );
       },
-      onSuccess: () => {
+      onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ['transactions'] });
       },
       onError: (error, { id }) => {
+        const errorMessage =
+          error.response?.data?.message ||
+          error.message ||
+          'Failed to upload transactions.';
         setUploadedFiles((prev) =>
           prev.map((f) =>
             f.id === id ? { ...f, failed: true, progress: 0 } : f,

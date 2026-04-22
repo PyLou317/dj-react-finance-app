@@ -17,6 +17,24 @@ export const fetchAccounts = async (token) => {
   return response.json();
 };
 
+export const deleteAccount = async (token, accountId) => {
+  const response = await fetch(`${apiUrl}api/accounts/${accountId}/`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete account: ${response.statusText}`);
+  }
+
+  // Standard 204 No Content response for successful deletion
+  if (response.status === 204) return null;
+  return response.json();
+};
+
 export const fetchAccountsByOrg = async (token, accountId) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
