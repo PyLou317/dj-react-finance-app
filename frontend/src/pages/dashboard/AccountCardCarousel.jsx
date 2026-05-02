@@ -28,7 +28,7 @@ export default function AccountCardCarousel() {
   const sortedAccounts = sortAccounts(accounts);
 
   return (
-    <>
+    <div className='mt-4'>
       <Title name="My Accounts" />
       <div className="flex flex-row py-5 rounded-2xl w-full gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory z-10">
         {isPending || isFetching
@@ -44,6 +44,6 @@ export default function AccountCardCarousel() {
               ))
             : skeletonCards.map((i) => <NoDataAccountCard key={i} />)}
       </div>
-    </>
+    </div>
   );
 }
