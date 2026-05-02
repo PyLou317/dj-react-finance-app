@@ -6,7 +6,7 @@ export default function WelcomeHeader() {
   const user = useContext(UserContext);
 
   return (
-    <div>
+    <div className='mb-4'>
       <h1 className="text-xl font-semibold">Hello, {user?.username}!</h1>
       <small className='text-gray-400 text-xm'>Welcome to Evergreen Financial</small>
       {/* <p className="text-sm text-gray-400">{date}</p> */}
