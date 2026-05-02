@@ -1,10 +1,8 @@
-import BarGraph from './BarGraph';
 import Card from './Card';
 import CardTitle from './CardTItle';
 import NoDataAvailable from './NoDataAvailable';
 import {
   Chart as ChartJS,
-  ArcElement,
   CategoryScale,
   BarElement,
   Title,
@@ -17,29 +15,7 @@ import { Bar } from 'react-chartjs-2';
 // ChartJS.register(ArcElement, Title, Tooltip);
 ChartJS.register(CategoryScale, LogarithmicScale, BarElement, Title, Tooltip);
 
-export default function MonthlyExpenseBarChart({
-  data,
-  handleMonthFilter,
-  handleYearFilter,
-  years,
-  yearFilter,
-  monthFilter,
-}) {
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-
+export default function MonthlyExpenseBarChart({ data }) {
   const hasData = data && data.length > 0;
 
   const chartData = {
@@ -86,34 +62,6 @@ export default function MonthlyExpenseBarChart({
   return (
     <Card>
       <CardTitle name="Monthly Expense Chart" />
-      <div className="flex flex-row justify-end gap-2">
-        <select
-          name="month"
-          id="month"
-          className="border rounded-md p-1"
-          onChange={handleMonthFilter}
-          value={monthFilter.toLowerCase()}
-        >
-          {months.map((month) => (
-            <option key={month} value={month.toLowerCase()}>
-              {month}
-            </option>
-          ))}
-        </select>
-        <select
-          name="year"
-          id="year"
-          className="border rounded-md p-1"
-          onChange={handleYearFilter}
-          value={yearFilter}
-        >
-          {years.map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
-      </div>
       {!hasData ? (
         <NoDataAvailable />
       ) : (
