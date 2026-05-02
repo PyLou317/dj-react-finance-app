@@ -4,14 +4,14 @@ import { fetchCategoryTotals } from '../../api/categories';
 import { fetchBudgets } from '../../api/budgets';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 
-import TopNavbar from '../../components/navbar/TopNavBar';
-import WelcomeHeader from '../../components/navbar/Header';
+import MainTitle from '@/components/MainTitle';
 import BudgetCard from './BudgetCard';
 import AccountCardCarousel from './AccountCardCarousel';
 import TransCard from './TransCard';
 import CategoryCard from './CategoryCard';
 import MonthlyExpenseBarChart from './MonthlyExpenseBarChart';
 import PageWrapper from '../../components/PageWrapper';
+import DashboardFilter from './DashboardFilter';
 
 export default function DashboardPage() {
   const today = new Date();
@@ -67,23 +67,24 @@ export default function DashboardPage() {
   return (
     <>
       <PageWrapper>
-        <div className="mx-auto mb-2">
-          <AccountCardCarousel />
+        <MainTitle name="Dashboard" />
+        <AccountCardCarousel />
+        <div className="flex mb-4">
+          <DashboardFilter
+            years={years}
+            yearFilter={yearFilter}
+            monthFilter={monthFilter}
+            handleMonthFilter={handleMonthFilter}
+            handleYearFilter={handleYearFilter}
+          />
         </div>
         <div className="sm:grid sm:grid-cols-2 flex flex-col gap-x-4 gap-y-2 justify-center mb-2">
           <BudgetCard budgets={budgets} categoryTotals={categoryTotals} />
           <CategoryCard categoryTotals={categoryTotals} />
         </div>
         <div className="sm:grid sm:grid-cols-1 flex flex-col gap-x-4 gap-y-2 justify-center">
+          <MonthlyExpenseBarChart data={categoryTotals} />
           <TransCard />
-          <MonthlyExpenseBarChart
-            data={categoryTotals}
-            handleMonthFilter={handleMonthFilter}
-            handleYearFilter={handleYearFilter}
-            years={years}
-            monthFilter={monthFilter}
-            yearFilter={yearFilter}
-          />
         </div>
       </PageWrapper>
     </>
